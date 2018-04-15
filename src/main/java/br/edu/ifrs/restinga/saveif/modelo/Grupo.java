@@ -23,216 +23,6 @@ import javax.persistence.TemporalType;
 @Entity
 public class Grupo implements Serializable{
 
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the nome
-     */
-    public String getNome() {
-        return nome;
-    }
-
-    /**
-     * @param nome the nome to set
-     */
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    /**
-     * @return the imagem
-     */
-    public byte[] getImagem() {
-        return imagem;
-    }
-
-    /**
-     * @param imagem the imagem to set
-     */
-    public void setImagem(byte[] imagem) {
-        this.imagem = imagem;
-    }
-
-    /**
-     * @return the tipoImagem
-     */
-    public String getTipoImagem() {
-        return tipoImagem;
-    }
-
-    /**
-     * @param tipoImagem the tipoImagem to set
-     */
-    public void setTipoImagem(String tipoImagem) {
-        this.tipoImagem = tipoImagem;
-    }
-
-    /**
-     * @return the descricao
-     */
-    public String getDescricao() {
-        return descricao;
-    }
-
-    /**
-     * @param descricao the descricao to set
-     */
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    /**
-     * @return the tipoPrivacidade
-     */
-    public String getTipoPrivacidade() {
-        return tipoPrivacidade;
-    }
-
-    /**
-     * @param tipoPrivacidade the tipoPrivacidade to set
-     */
-    public void setTipoPrivacidade(String tipoPrivacidade) {
-        this.tipoPrivacidade = tipoPrivacidade;
-    }
-
-    /**
-     * @return the dataCriacao
-     */
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    /**
-     * @param dataCriacao the dataCriacao to set
-     */
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    /**
-     * @return the dataDelecao
-     */
-    public Date getDataDelecao() {
-        return dataDelecao;
-    }
-
-    /**
-     * @param dataDelecao the dataDelecao to set
-     */
-    public void setDataDelecao(Date dataDelecao) {
-        this.dataDelecao = dataDelecao;
-    }
-
-    /**
-     * @return the categoria
-     */
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    /**
-     * @param categoria the categoria to set
-     */
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    /**
-     * @return the donoGrupo
-     */
-    public Usuario getDonoGrupo() {
-        return donoGrupo;
-    }
-
-    /**
-     * @param donoGrupo the donoGrupo to set
-     */
-    public void setDonoGrupo(Usuario donoGrupo) {
-        this.donoGrupo = donoGrupo;
-    }
-
-    /**
-     * @return the coordenadoresGrupo
-     */
-    public List<Usuario> getCoordenadoresGrupo() {
-        return coordenadoresGrupo;
-    }
-
-    /**
-     * @param coordenadoresGrupo the coordenadoresGrupo to set
-     */
-    public void setCoordenadoresGrupo(List<Usuario> coordenadoresGrupo) {
-        this.coordenadoresGrupo = coordenadoresGrupo;
-    }
-
-    /**
-     * @return the integrantesGrupo
-     */
-    public List<Usuario> getIntegrantesGrupo() {
-        return integrantesGrupo;
-    }
-
-    /**
-     * @param integrantesGrupo the integrantesGrupo to set
-     */
-    public void setIntegrantesGrupo(List<Usuario> integrantesGrupo) {
-        this.integrantesGrupo = integrantesGrupo;
-    }
-
-    /**
-     * @return the solicitantesGrupo
-     */
-    public List<Usuario> getSolicitantesGrupo() {
-        return solicitantesGrupo;
-    }
-
-    /**
-     * @param solicitantesGrupo the solicitantesGrupo to set
-     */
-    public void setSolicitantesGrupo(List<Usuario> solicitantesGrupo) {
-        this.solicitantesGrupo = solicitantesGrupo;
-    }
-
-    /**
-     * @return the convitesGrupo
-     */
-    public List<Usuario> getConvitesGrupo() {
-        return convitesGrupo;
-    }
-
-    /**
-     * @param convitesGrupo the convitesGrupo to set
-     */
-    public void setConvitesGrupo(List<Usuario> convitesGrupo) {
-        this.convitesGrupo = convitesGrupo;
-    }
-
-    /**
-     * @return the atividades
-     */
-    public List<Atividade> getAtividades() {
-        return atividades;
-    }
-
-    /**
-     * @param atividades the atividades to set
-     */
-    public void setAtividades(List<Atividade> atividades) {
-        this.atividades = atividades;
-    }
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
@@ -267,9 +57,18 @@ public class Grupo implements Serializable{
     private Date dataDelecao;     
 
     
+    
+    
     @ManyToOne
     @JoinColumn(nullable = false)    
     private Categoria categoria;    
+   
+    @OneToMany(orphanRemoval=true)
+    private List<Atividade> atividades;  
+    
+    @OneToMany(orphanRemoval=true)
+    private List<Topico> topicos;  
+    
     
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -288,10 +87,113 @@ public class Grupo implements Serializable{
     
     @ManyToMany
     private List<Usuario> convitesGrupo; 
+
+ 
+    
+    public int getId() {
+        return id;
+    }
+    public String getNome() {
+        return nome;
+    }
+    public byte[] getImagem() {
+        return imagem;
+    }
+    public String getTipoImagem() {
+        return tipoImagem;
+    }
+    public String getDescricao() {
+        return descricao;
+    }
+    public String getTipoPrivacidade() {
+        return tipoPrivacidade;
+    }
+    public Date getDataCriacao() {
+        return dataCriacao;
+    }
+    public Date getDataDelecao() {
+        return dataDelecao;
+    }
+    public Categoria getCategoria() {
+        return categoria;
+    }
+    public List<Atividade> getAtividades() {
+        return atividades;
+    }
+    public List<Topico> getTopicos() {
+        return topicos;
+    }
+    public Usuario getDonoGrupo() {
+        return donoGrupo;
+    }
+    public List<Usuario> getCoordenadoresGrupo() {
+        return coordenadoresGrupo;
+    }
+    public List<Usuario> getIntegrantesGrupo() {
+        return integrantesGrupo;
+    }
+    public List<Usuario> getSolicitantesGrupo() {
+        return solicitantesGrupo;
+    }
+    public List<Usuario> getConvitesGrupo() {
+        return convitesGrupo;
+    }
+
+ 
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    public void setImagem(byte[] imagem) {
+        this.imagem = imagem;
+    }
+    public void setTipoImagem(String tipoImagem) {
+        this.tipoImagem = tipoImagem;
+    }
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+    public void setTipoPrivacidade(String tipoPrivacidade) {
+        this.tipoPrivacidade = tipoPrivacidade;
+    }
+    public void setDataCriacao(Date dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+    public void setDataDelecao(Date dataDelecao) {
+        this.dataDelecao = dataDelecao;
+    }
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+    public void setAtividades(List<Atividade> atividades) {
+        this.atividades = atividades;
+    }
+    public void setTopicos(List<Topico> topicos) {
+        this.topicos = topicos;
+    }
+    public void setDonoGrupo(Usuario donoGrupo) {
+        this.donoGrupo = donoGrupo;
+    }
+    public void setCoordenadoresGrupo(List<Usuario> coordenadoresGrupo) {
+        this.coordenadoresGrupo = coordenadoresGrupo;
+    }
+    public void setIntegrantesGrupo(List<Usuario> integrantesGrupo) {
+        this.integrantesGrupo = integrantesGrupo;
+    }
+    public void setSolicitantesGrupo(List<Usuario> solicitantesGrupo) {
+        this.solicitantesGrupo = solicitantesGrupo;
+    }
+    public void setConvitesGrupo(List<Usuario> convitesGrupo) {
+        this.convitesGrupo = convitesGrupo;
+    }
     
          
-    @OneToMany(orphanRemoval=true)
-    private List<Atividade> atividades;    
+  
+    
+    
+    
     
     
 }

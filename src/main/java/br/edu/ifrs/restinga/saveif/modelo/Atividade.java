@@ -15,75 +15,6 @@ import javax.persistence.TemporalType;
 @Entity
 public class Atividade implements Serializable{
 
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the nome
-     */
-    public String getNome() {
-        return nome;
-    }
-
-    /**
-     * @param nome the nome to set
-     */
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    /**
-     * @return the descricao
-     */
-    public String getDescricao() {
-        return descricao;
-    }
-
-    /**
-     * @param descricao the descricao to set
-     */
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    /**
-     * @return the localizacao
-     */
-    public String getLocalizacao() {
-        return localizacao;
-    }
-
-    /**
-     * @param localizacao the localizacao to set
-     */
-    public void setLocalizacao(String localizacao) {
-        this.localizacao = localizacao;
-    }
-
-    /**
-     * @return the dataAtividade
-     */
-    public Date getDataAtividade() {
-        return dataAtividade;
-    }
-
-    /**
-     * @param dataAtividade the dataAtividade to set
-     */
-    public void setDataAtividade(Date dataAtividade) {
-        this.dataAtividade = dataAtividade;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -103,5 +34,41 @@ public class Atividade implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataAtividade;
 
+
+    
+    public int getId() {
+        return id;
+    }
+    public String getNome() {
+        return nome;
+    }
+    public String getDescricao() {
+        return descricao;
+    }
+    public String getLocalizacao() {
+        return localizacao;
+    }
+    public Date getDataAtividade() {
+        return dataAtividade;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+    public void setLocalizacao(String localizacao) {
+        this.localizacao = localizacao;
+    }
+    public void setDataAtividade(Date dataAtividade) {
+        this.dataAtividade = dataAtividade;
+    }
+   
+    
     
 }

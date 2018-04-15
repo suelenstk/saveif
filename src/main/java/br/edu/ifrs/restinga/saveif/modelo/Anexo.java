@@ -18,61 +18,6 @@ import javax.persistence.Lob;
 @Entity
 public class Anexo implements Serializable {
 
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the documentoAnexo
-     */
-    public byte[] getDocumentoAnexo() {
-        return documentoAnexo;
-    }
-
-    /**
-     * @param documentoAnexo the documentoAnexo to set
-     */
-    public void setDocumentoAnexo(byte[] documentoAnexo) {
-        this.documentoAnexo = documentoAnexo;
-    }
-
-    /**
-     * @return the tipoAnexo
-     */
-    public String getTipoAnexo() {
-        return tipoAnexo;
-    }
-
-    /**
-     * @param tipoAnexo the tipoAnexo to set
-     */
-    public void setTipoAnexo(String tipoAnexo) {
-        this.tipoAnexo = tipoAnexo;
-    }
-
-    /**
-     * @return the nomeAnexo
-     */
-    public String getNomeAnexo() {
-        return nomeAnexo;
-    }
-
-    /**
-     * @param nomeAnexo the nomeAnexo to set
-     */
-    public void setNomeAnexo(String nomeAnexo) {
-        this.nomeAnexo = nomeAnexo;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
@@ -85,6 +30,43 @@ public class Anexo implements Serializable {
     private String tipoAnexo;
     
     private String nomeAnexo;
+
+    
+    
+   
+    public int getId() {
+        return id;
+    }
+    public byte[] getDocumentoAnexo() {
+        return documentoAnexo;
+    }
+    public String getTipoAnexo() {
+        return tipoAnexo;
+    }
+    public String getNomeAnexo() {
+        return nomeAnexo;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setDocumentoAnexo(byte[] documentoAnexo) {
+        this.documentoAnexo = documentoAnexo;
+    }
+    public void setTipoAnexo(String tipoAnexo) {
+        this.tipoAnexo = tipoAnexo;
+    }
+    public void setNomeAnexo(String nomeAnexo) {
+        this.nomeAnexo = nomeAnexo;
+    }
+    
+    
+    
+    
+    
+    
+    
     
     
     

@@ -16,103 +16,6 @@ import javax.persistence.TemporalType;
 @Entity
 public class Post implements Serializable {
 
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the titulo
-     */
-    public String getTitulo() {
-        return titulo;
-    }
-
-    /**
-     * @param titulo the titulo to set
-     */
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    /**
-     * @return the texto
-     */
-    public String getTexto() {
-        return texto;
-    }
-
-    /**
-     * @param texto the texto to set
-     */
-    public void setTexto(String texto) {
-        this.texto = texto;
-    }
-
-    /**
-     * @return the dataPostagem
-     */
-    public Date getDataPostagem() {
-        return dataPostagem;
-    }
-
-    /**
-     * @param dataPostagem the dataPostagem to set
-     */
-    public void setDataPostagem(Date dataPostagem) {
-        this.dataPostagem = dataPostagem;
-    }
-
-    /**
-     * @return the dataDelecao
-     */
-    public Date getDataDelecao() {
-        return dataDelecao;
-    }
-
-    /**
-     * @param dataDelecao the dataDelecao to set
-     */
-    public void setDataDelecao(Date dataDelecao) {
-        this.dataDelecao = dataDelecao;
-    }
-
-    /**
-     * @return the autorPost
-     */
-    public Usuario getAutorPost() {
-        return autorPost;
-    }
-
-    /**
-     * @param autorPost the autorPost to set
-     */
-    public void setAutorPost(Usuario autorPost) {
-        this.autorPost = autorPost;
-    }
-
-    /**
-     * @return the anexoPost
-     */
-    public Anexo getAnexoPost() {
-        return anexoPost;
-    }
-
-    /**
-     * @param anexoPost the anexoPost to set
-     */
-    public void setAnexoPost(Anexo anexoPost) {
-        this.anexoPost = anexoPost;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
@@ -142,6 +45,58 @@ public class Post implements Serializable {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Anexo anexoPost;
+
+    
+    public int getId() {
+        return id;
+    }
+    public String getTitulo() {
+        return titulo;
+    }
+    public String getTexto() {
+        return texto;
+    }
+    public Date getDataPostagem() {
+        return dataPostagem;
+    }
+    public Date getDataDelecao() {
+        return dataDelecao;
+    }
+    public Usuario getAutorPost() {
+        return autorPost;
+    }
+    public Anexo getAnexoPost() {
+        return anexoPost;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+    public void setTexto(String texto) {
+        this.texto = texto;
+    }
+    public void setDataPostagem(Date dataPostagem) {
+        this.dataPostagem = dataPostagem;
+    }
+    public void setDataDelecao(Date dataDelecao) {
+        this.dataDelecao = dataDelecao;
+    }
+    public void setAutorPost(Usuario autorPost) {
+        this.autorPost = autorPost;
+    }
+    public void setAnexoPost(Anexo anexoPost) {
+        this.anexoPost = anexoPost;
+    }
+    
+    
+    
+    
+    
+    
     
     
 }

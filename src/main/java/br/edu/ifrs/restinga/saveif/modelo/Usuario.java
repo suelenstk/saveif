@@ -77,8 +77,6 @@ public class Usuario implements Serializable {
     private Date dataDelecao;
     
     
-        
-    
     @ManyToOne
     private Curso curso;    
     
@@ -104,304 +102,140 @@ public class Usuario implements Serializable {
     @ManyToMany(mappedBy = "convitesGrupo")
     private List<Grupo> gruposConvidado;
 
- 
-    
 
-    /**
-     * @return the id
-     */
+    
+    
     public int getId() {
         return id;
     }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the email
-     */
     public String getEmail() {
         return email;
     }
-
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    /**
-     * @return the senha
-     */
     public String getSenha() {
         return senha;
     }
-
-    /**
-     * @param senha the senha to set
-     */
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    /**
-     * @return the novaSenha
-     */
     public String getNovaSenha() {
         return novaSenha;
     }
-
-    /**
-     * @param novaSenha the novaSenha to set
-     */
-    public void setNovaSenha(String novaSenha) {
-        this.novaSenha = novaSenha;
-    }
-
-    /**
-     * @return the nome
-     */
     public String getNome() {
         return nome;
     }
-
-    /**
-     * @param nome the nome to set
-     */
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    /**
-     * @return the cpf
-     */
     public String getCpf() {
         return cpf;
     }
-
-    /**
-     * @param cpf the cpf to set
-     */
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    /**
-     * @return the dataNascimento
-     */
     public Date getDataNascimento() {
         return dataNascimento;
     }
-
-    /**
-     * @param dataNascimento the dataNascimento to set
-     */
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    /**
-     * @return the tipoVinculo
-     */
     public String getTipoVinculo() {
         return tipoVinculo;
     }
-
-    /**
-     * @param tipoVinculo the tipoVinculo to set
-     */
-    public void setTipoVinculo(String tipoVinculo) {
-        this.tipoVinculo = tipoVinculo;
-    }
-
-    /**
-     * @return the sobreUsuario
-     */
     public String getSobreUsuario() {
         return sobreUsuario;
     }
-
-    /**
-     * @param sobreUsuario the sobreUsuario to set
-     */
-    public void setSobreUsuario(String sobreUsuario) {
-        this.sobreUsuario = sobreUsuario;
-    }
-
-    /**
-     * @return the imagem
-     */
     public byte[] getImagem() {
         return imagem;
     }
-
-    /**
-     * @param imagem the imagem to set
-     */
-    public void setImagem(byte[] imagem) {
-        this.imagem = imagem;
-    }
-
-    /**
-     * @return the tipoImagem
-     */
     public String getTipoImagem() {
         return tipoImagem;
     }
-
-    /**
-     * @param tipoImagem the tipoImagem to set
-     */
-    public void setTipoImagem(String tipoImagem) {
-        this.tipoImagem = tipoImagem;
-    }
-
-    /**
-     * @return the permissoes
-     */
     public List<String> getPermissoes() {
         return permissoes;
     }
-
-    /**
-     * @param permissoes the permissoes to set
-     */
-    public void setPermissoes(List<String> permissoes) {
-        this.permissoes = permissoes;
-    }
-
-    /**
-     * @return the dataInsercao
-     */
     public Date getDataInsercao() {
         return dataInsercao;
     }
-
-    /**
-     * @param dataInsercao the dataInsercao to set
-     */
-    public void setDataInsercao(Date dataInsercao) {
-        this.dataInsercao = dataInsercao;
-    }
-
-    /**
-     * @return the dataDelecao
-     */
     public Date getDataDelecao() {
         return dataDelecao;
     }
-
-    /**
-     * @param dataDelecao the dataDelecao to set
-     */
-    public void setDataDelecao(Date dataDelecao) {
-        this.dataDelecao = dataDelecao;
-    }
-
-    /**
-     * @return the curso
-     */
     public Curso getCurso() {
         return curso;
     }
-
-    /**
-     * @param curso the curso to set
-     */
-    public void setCurso(Curso curso) {
-        this.curso = curso;
-    }
-
-    /**
-     * @return the categorias
-     */
     public List<Categoria> getCategorias() {
         return categorias;
     }
-
-    /**
-     * @param categorias the categorias to set
-     */
-    public void setCategorias(List<Categoria> categorias) {
-        this.categorias = categorias;
-    }
-
-    /**
-     * @return the notificacoes
-     */
     public List<Notificacao> getNotificacoes() {
         return notificacoes;
     }
-
-    /**
-     * @param notificacoes the notificacoes to set
-     */
-    public void setNotificacoes(List<Notificacao> notificacoes) {
-        this.notificacoes = notificacoes;
-    }
-
-    /**
-     * @return the gruposDono
-     */
     public List<Grupo> getGruposDono() {
         return gruposDono;
     }
-
-    /**
-     * @param gruposDono the gruposDono to set
-     */
-    public void setGruposDono(List<Grupo> gruposDono) {
-        this.gruposDono = gruposDono;
-    }
-
-    /**
-     * @return the gruposCoordenados
-     */
     public List<Grupo> getGruposCoordenados() {
         return gruposCoordenados;
     }
-
-    /**
-     * @param gruposCoordenados the gruposCoordenados to set
-     */
-    public void setGruposCoordenados(List<Grupo> gruposCoordenados) {
-        this.gruposCoordenados = gruposCoordenados;
-    }
-
-    /**
-     * @return the gruposIntegrados
-     */
     public List<Grupo> getGruposIntegrados() {
         return gruposIntegrados;
     }
-
-    /**
-     * @param gruposIntegrados the gruposIntegrados to set
-     */
-    public void setGruposIntegrados(List<Grupo> gruposIntegrados) {
-        this.gruposIntegrados = gruposIntegrados;
-    }
-
-    /**
-     * @return the gruposConvidado
-     */
     public List<Grupo> getGruposConvidado() {
         return gruposConvidado;
     }
 
-    /**
-     * @param gruposConvidado the gruposConvidado to set
-     */
+    
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+    public void setNovaSenha(String novaSenha) {
+        this.novaSenha = novaSenha;
+    }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+    public void setTipoVinculo(String tipoVinculo) {
+        this.tipoVinculo = tipoVinculo;
+    }
+    public void setSobreUsuario(String sobreUsuario) {
+        this.sobreUsuario = sobreUsuario;
+    }
+    public void setImagem(byte[] imagem) {
+        this.imagem = imagem;
+    }
+    public void setTipoImagem(String tipoImagem) {
+        this.tipoImagem = tipoImagem;
+    }
+    public void setPermissoes(List<String> permissoes) {
+        this.permissoes = permissoes;
+    }
+    public void setDataInsercao(Date dataInsercao) {
+        this.dataInsercao = dataInsercao;
+    }
+    public void setDataDelecao(Date dataDelecao) {
+        this.dataDelecao = dataDelecao;
+    }
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+    public void setCategorias(List<Categoria> categorias) {
+        this.categorias = categorias;
+    }
+    public void setNotificacoes(List<Notificacao> notificacoes) {
+        this.notificacoes = notificacoes;
+    }
+    public void setGruposDono(List<Grupo> gruposDono) {
+        this.gruposDono = gruposDono;
+    }
+    public void setGruposCoordenados(List<Grupo> gruposCoordenados) {
+        this.gruposCoordenados = gruposCoordenados;
+    }
+    public void setGruposIntegrados(List<Grupo> gruposIntegrados) {
+        this.gruposIntegrados = gruposIntegrados;
+    }
     public void setGruposConvidado(List<Grupo> gruposConvidado) {
         this.gruposConvidado = gruposConvidado;
     }
-    
-    
+
+  
     
     
     

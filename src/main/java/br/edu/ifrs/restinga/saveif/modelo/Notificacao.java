@@ -14,47 +14,6 @@ import javax.persistence.TemporalType;
 @Entity
 public class Notificacao implements Serializable{
 
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the descricao
-     */
-    public String getDescricao() {
-        return descricao;
-    }
-
-    /**
-     * @param descricao the descricao to set
-     */
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    /**
-     * @return the dataNotificacao
-     */
-    public Date getDataNotificacao() {
-        return dataNotificacao;
-    }
-
-    /**
-     * @param dataNotificacao the dataNotificacao to set
-     */
-    public void setDataNotificacao(Date dataNotificacao) {
-        this.dataNotificacao = dataNotificacao;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
@@ -67,5 +26,29 @@ public class Notificacao implements Serializable{
     @Temporal(TemporalType.DATE)
     private Date dataNotificacao = new Date(System.currentTimeMillis());
 
+
+    public int getId() {
+        return id;
+    }
+    public String getDescricao() {
+        return descricao;
+    }
+    public Date getDataNotificacao() {
+        return dataNotificacao;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+    public void setDataNotificacao(Date dataNotificacao) {
+        this.dataNotificacao = dataNotificacao;
+    }
+
+    
+    
     
 }
