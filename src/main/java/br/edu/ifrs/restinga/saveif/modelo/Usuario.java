@@ -80,9 +80,11 @@ public class Usuario implements Serializable {
     @ManyToOne
     private Curso curso;    
     
+    
     @OneToMany
     private List<Categoria> categorias;
     
+    @JsonIgnore
     @OneToMany
     private List<Notificacao> notificacoes;
     

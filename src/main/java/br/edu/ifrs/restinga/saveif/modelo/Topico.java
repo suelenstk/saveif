@@ -1,6 +1,7 @@
 package br.edu.ifrs.restinga.saveif.modelo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,7 @@ public class Topico implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dataDelecao;    
     
+    @JsonIgnore
     @OneToMany(orphanRemoval=true)
     private List<Post> posts;  
     
