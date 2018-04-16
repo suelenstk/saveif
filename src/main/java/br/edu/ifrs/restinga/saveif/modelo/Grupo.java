@@ -56,9 +56,6 @@ public class Grupo implements Serializable{
     @Temporal(TemporalType.DATE)
     private Date dataDelecao;     
 
-    
-    
-    
     @ManyToOne
     @JoinColumn(nullable = false)    
     private Categoria categoria;    
@@ -91,9 +88,7 @@ public class Grupo implements Serializable{
     
     @JsonIgnore
     @ManyToMany
-    private List<Usuario> convitesGrupo; 
-
- 
+    private List<Usuario> convitesGrupo;  
     
     public int getId() {
         return id;
@@ -192,13 +187,7 @@ public class Grupo implements Serializable{
     }
     public void setConvitesGrupo(List<Usuario> convitesGrupo) {
         this.convitesGrupo = convitesGrupo;
-    }
-    
-         
-  
-    
-    
-    
+    }   
     
     
 }
