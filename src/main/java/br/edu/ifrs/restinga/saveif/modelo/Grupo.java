@@ -63,28 +63,33 @@ public class Grupo implements Serializable{
     @JoinColumn(nullable = false)    
     private Categoria categoria;    
    
+    @JsonIgnore
     @OneToMany(orphanRemoval=true)
     private List<Atividade> atividades;  
     
+    @JsonIgnore
     @OneToMany(orphanRemoval=true)
     private List<Topico> topicos;  
     
-    
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
     private Usuario donoGrupo;
     
+    @JsonIgnore
     @ManyToMany
     private List<Usuario> coordenadoresGrupo;   
         
-     
+    
+    @JsonIgnore
     @ManyToMany
     private List<Usuario> integrantesGrupo;
     
-    
+    @JsonIgnore
     @ManyToMany
     private List<Usuario> solicitantesGrupo; 
     
+    @JsonIgnore
     @ManyToMany
     private List<Usuario> convitesGrupo; 
 
