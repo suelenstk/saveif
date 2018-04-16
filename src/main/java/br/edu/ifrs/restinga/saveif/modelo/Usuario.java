@@ -54,7 +54,7 @@ public class Usuario implements Serializable {
     @Column(nullable = false, length = 20)
     private String tipoVinculo;
     
-    @Column(nullable = false)
+    @Column(length = 80)
     private String sobreUsuario;
         
     @Lob()

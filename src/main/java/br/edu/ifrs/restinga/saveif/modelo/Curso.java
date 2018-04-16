@@ -17,7 +17,7 @@ public class Curso implements Serializable{
     @Column(nullable = false, length=80)
     private String nome;   
     
-    @Column(nullable = false, length=40)
+    @Column(nullable = false, length=80)
     private String nivel;   
 
 

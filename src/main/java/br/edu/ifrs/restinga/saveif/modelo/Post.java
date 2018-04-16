@@ -43,7 +43,6 @@ public class Post implements Serializable {
     
         
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Anexo anexoPost;
 
     
