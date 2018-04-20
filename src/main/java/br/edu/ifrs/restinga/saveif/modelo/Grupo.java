@@ -3,6 +3,7 @@ package br.edu.ifrs.restinga.saveif.modelo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -82,7 +83,7 @@ public class Grupo implements Serializable{
     @ManyToMany
     private List<Usuario> integrantesGrupo;
     
-    @JsonIgnore
+    
     @ManyToMany
     private List<Usuario> solicitantesGrupo; 
     
@@ -139,7 +140,14 @@ public class Grupo implements Serializable{
         return convitesGrupo;
     }
 
- 
+     public Grupo() {
+         atividades = new ArrayList<>();
+         topicos = new ArrayList<>();
+         coordenadoresGrupo = new ArrayList<>();
+         solicitantesGrupo = new ArrayList<>();
+         convitesGrupo = new ArrayList<>();        
+    }
+     
     public void setId(int id) {
         this.id = id;
     }
