@@ -7,6 +7,7 @@ package br.edu.ifrs.restinga.saveif.controller;
 
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
+import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,13 @@ public class Grupos {
             grupo.setId(id);
             GrupoDAO.save(grupo);
         }
+    }
+    
+    @RequestMapping(path="/grupos/integrantes", method = RequestMethod.GET)
+    public Grupo pesquisaPorIntegrantes(@RequestParam int id){
+        Usuario igual = new Usuario();
+        igual.setId(id);
+        return (GrupoDAO.findByIntegrantesGrupo(igual));
     }
 
 }

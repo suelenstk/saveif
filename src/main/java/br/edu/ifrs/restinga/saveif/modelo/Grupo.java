@@ -79,7 +79,7 @@ public class Grupo implements Serializable{
     private List<Usuario> coordenadoresGrupo;   
         
     
-    @JsonIgnore
+    
     @ManyToMany
     private List<Usuario> integrantesGrupo;
     
@@ -90,6 +90,8 @@ public class Grupo implements Serializable{
     @JsonIgnore
     @ManyToMany
     private List<Usuario> convitesGrupo;  
+    
+   
     
     public int getId() {
         return id;
