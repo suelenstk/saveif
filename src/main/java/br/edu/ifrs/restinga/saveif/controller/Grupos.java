@@ -11,6 +11,7 @@ import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,16 @@ public class Grupos {
         Usuario igual = new Usuario();
         igual.setId(id);
         return (GrupoDAO.findByIntegrantesGrupo(igual));
+    }
+    
+    @PreAuthorize("hasAuthority('administrador')")
+    @RequestMapping(path="/grupos", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Grupo criar(@RequestBody Grupo grupo)
+    {
+        grupo.setId(0);
+        Grupo grupoSalvo = GrupoDAO.save(grupo);
+        return grupoSalvo;
     }
 
 }
