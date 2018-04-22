@@ -66,8 +66,15 @@ VALUES
 ;
 
 
-INSERT INTO `usuario_permissoes` (`usuario_id`, `permissoes`) VALUES ('1', 'administrador');
-INSERT INTO `usuario_permissoes` (`usuario_id`, `permissoes`) VALUES ('2', 'certificado');
+INSERT INTO `usuario_permissoes` (`usuario_id`, `permissoes`) 
+VALUES 
+('1', 'administrador'),
+('2', 'usuario'),
+('3', 'usuario'),
+('4', 'usuario'),
+('5', 'usuario'),
+('2', 'certificado')
+;
 
 
 INSERT INTO `usuario_categorias` (`usuario_id`, `categorias_id`) 
@@ -134,7 +141,6 @@ INSERT INTO `topico_posts` (`topico_id`, `posts_id`)
 VALUES 
 ('1', '1')
 ;
-
 
 
 
