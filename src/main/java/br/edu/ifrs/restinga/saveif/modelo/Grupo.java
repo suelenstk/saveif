@@ -69,7 +69,6 @@ public class Grupo implements Serializable{
     @OneToMany(orphanRemoval=true)
     private List<Topico> topicos;  
     
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
     private Usuario donoGrupo;

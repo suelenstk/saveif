@@ -47,7 +47,7 @@ public class Grupos {
     }
     
     @RequestMapping(path="/grupos/integrantes", method = RequestMethod.GET)
-    public Grupo pesquisaPorIntegrantes(@RequestParam int id){
+    public Grupo pesquisaPorIntegrantes(@RequestParam int id) throws Exception {
         Usuario igual = new Usuario();
         igual.setId(id);
         return (GrupoDAO.findByIntegrantesGrupo(igual));

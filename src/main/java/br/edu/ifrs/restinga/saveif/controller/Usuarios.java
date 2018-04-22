@@ -1,18 +1,11 @@
 package br.edu.ifrs.restinga.saveif.controller;
 
-import br.edu.ifrs.restinga.saveif.dao.UsuarioDAO;
-import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import br.edu.ifrs.restinga.saveif.aut.ForbiddenException;
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
-
-
+import br.edu.ifrs.restinga.saveif.dao.UsuarioDAO;
+import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -22,14 +15,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
 
 
 @RestController
@@ -40,7 +32,7 @@ public class Usuarios {
 
     @RequestMapping(path = "/usuarios", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario inserir(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestBody Usuario usuario) {
+    public Usuario inserir(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestBody Usuario usuario) throws Exception {
         usuario.setId(0);
         usuario.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
 
@@ -66,30 +58,27 @@ public class Usuarios {
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Usuario> recuperar(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id) {
-        
+
         if (usuarioAut.getUsuario().getId() == id
                 || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
-            
+
             Optional<Usuario> findById = usuarioDAO.findById(id);
-            
-            if (findById.isPresent()) 
-                return ResponseEntity.ok(findById.get());            
+
+            if (findById.isPresent())
+                return ResponseEntity.ok(findById.get());
             else
                 return ResponseEntity.notFound().build();
-            
-           
+
+
         } else
             throw new ForbiddenException("Não é permitido acessar dados de outros usuários");
-        
+
     }
-    
-   
-  
-    
+
 
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void atualizar(@PathVariable int id, @RequestBody Usuario usuario) {
+    public void atualizar(@PathVariable int id, @RequestBody Usuario usuario) throws Exception {
         if (usuarioDAO.existsById(id)) {
             usuario.setId(id);
             usuarioDAO.save(usuario);
@@ -118,16 +107,13 @@ public class Usuarios {
 
         String token = JWT.create()
                 .withClaim("id", usuarioAut.getUsuario().getId()).
-                withExpiresAt(expira).
-                sign(algorithm);
+                        withExpiresAt(expira).
+                        sign(algorithm);
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.set("token", token);
 
         return new ResponseEntity<>(usuarioAut.getUsuario(), respHeaders, HttpStatus.OK);
     }
-
-
-
 
 
 }
