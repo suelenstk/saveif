@@ -186,14 +186,14 @@ public class Usuario implements Serializable {
     }
     public void setEmail(String prefixo) throws Exception {
         
-//        if (prefixo == null || prefixo.isEmpty())
-//            throw new Exception("O campo E-mail é de preenchimento obrigatório!");
-//        else if (!new Utilitarios().validaEmail(email+"@restinga.ifrs.edu.br"))
-//            throw new Exception("O E-mail digitado não é válido!");
-//
-////        this.email = prefixo + "@restinga.ifrs.edu.br";   //Guarda e-mail completo no servidor
+        if (prefixo == null || prefixo.isEmpty())
+            throw new Exception("O campo E-mail é de preenchimento obrigatório!");
+        else if (!new Utilitarios().validaEmail(email+"@restinga.ifrs.edu.br"))
+            throw new Exception("O E-mail digitado não é válido!");
+
+        this.email = prefixo + "@restinga.ifrs.edu.br";   //Guarda e-mail completo no servidor
         
-        this.email = prefixo;   //Guarda somente prefixo no servidor
+//        this.email = prefixo;   //Guarda somente prefixo no servidor
  
     }
     public void setSenha(String senha) throws Exception {
