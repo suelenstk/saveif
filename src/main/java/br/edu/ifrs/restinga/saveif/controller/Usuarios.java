@@ -55,6 +55,15 @@ public class Usuarios {
         return usuarioDAO.findAll(pageRequest);
     }
 
+    @RequestMapping(path = "/usuarios/listar", method = RequestMethod.GET)
+    public Iterable<Usuario> listarSemPaginacao(@RequestParam(required = false) String nome) {
+        if (nome != null && !nome.isEmpty() )
+            return usuarioDAO.findByNomeContaining(nome);
+        else
+            return usuarioDAO.findAll();
+    }
+    
+    
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Usuario> recuperar(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id) {
