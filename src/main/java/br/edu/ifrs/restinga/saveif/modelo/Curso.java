@@ -18,8 +18,19 @@ public class Curso implements Serializable{
     private String nome;   
     
     @Column(nullable = false, length=80)
-    private String nivel;   
+    private String nivel;
 
+
+    // Contrutores que permitem o cadastro e exclusao de usuarios.
+    // Verificar validade dos mesmos.
+
+    Curso(String id){
+        this.id = Integer.parseInt(id);
+    }
+
+    Curso(){
+
+    }
 
     public int getId() {
         return id;

@@ -64,7 +64,6 @@ public class Usuario implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dataDelecao;
 
-
     @ManyToOne
     private Curso curso;
 
@@ -177,77 +176,88 @@ public class Usuario implements Serializable {
         return gruposConvidado;
     }
 
-    
-    
-    
 
     public void setId(int id) {
         this.id = id;
     }
+
     public void setEmail(String prefixo) throws Exception {
-        
+
         if (prefixo == null || prefixo.isEmpty())
             throw new Exception("O campo E-mail é de preenchimento obrigatório!");
-        else if (!new Utilitarios().validaEmail(email+"@restinga.ifrs.edu.br"))
+        else if (!new Utilitarios().validaEmail(email + "@restinga.ifrs.edu.br"))
             throw new Exception("O E-mail digitado não é válido!");
 
         this.email = prefixo + "@restinga.ifrs.edu.br";   //Guarda e-mail completo no servidor
-        
+
 //        this.email = prefixo;   //Guarda somente prefixo no servidor
- 
+
     }
+
     public void setSenha(String senha) throws Exception {
         if (senha == null || senha.isEmpty())
             throw new Exception("O campo senha é de preenchimento obrigatório.");
         else
             this.senha = senha;
     }
+
     public void setNovaSenha(String novaSenha) {
         this.novaSenha = novaSenha;
     }
+
     public void setNome(String nome) throws Exception {
         if (nome == null || nome.isEmpty())
             throw new Exception("O campo nome é de preenchimento obrigatório.");
         else if (nome.length() > 60)
             throw new Exception("Excedido o tamanho máximo para o campo nome");
-        
+
         this.nome = nome;
     }
+
     public void setCpf(String cpf) throws Exception {
         if (!new Utilitarios().validaCPF(cpf))
             throw new Exception("O cpf informado não é válido!");
-        
+
         this.cpf = cpf;
     }
+
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
+
     public void setTipoVinculo(String tipoVinculo) throws Exception {
-         if (tipoVinculo == null || tipoVinculo.isEmpty())
+        if (tipoVinculo == null || tipoVinculo.isEmpty())
             throw new Exception("O campo Tipo de Vinculo é de preenchimento obrigatório.");
         else if (tipoVinculo.length() > 20)
             throw new Exception("Excedido o tamanho máximo para o campo Tipo de Vinculo");
 
-         this.tipoVinculo = tipoVinculo;
+        this.tipoVinculo = tipoVinculo;
     }
+
     public void setSobreUsuario(String sobreUsuario) {
         this.sobreUsuario = sobreUsuario;
     }
+
     public void setImagem(byte[] imagem) {
         this.imagem = imagem;
     }
+
     public void setTipoImagem(String tipoImagem) {
         this.tipoImagem = tipoImagem;
     }
+
     public void setPermissoes(List<String> permissoes) {
         this.permissoes = permissoes;
     }
+
     public void setDataInsercao(Date dataInsercao) {
         this.dataInsercao = dataInsercao;
     }
+
     public void setDataDelecao(Date dataDelecao) {
         this.dataDelecao = dataDelecao;
     }
+
     public void setCurso(Curso curso) throws Exception {
         if (tipoVinculo.equalsIgnoreCase("aluno")) {
             if (curso == null)
@@ -255,24 +265,30 @@ public class Usuario implements Serializable {
         }
         this.curso = curso;
     }
+
     public void setCategorias(List<Categoria> categorias) {
         this.categorias = categorias;
     }
+
     public void setNotificacoes(List<Notificacao> notificacoes) {
         this.notificacoes = notificacoes;
     }
+
     public void setGruposDono(List<Grupo> gruposDono) {
         this.gruposDono = gruposDono;
     }
+
     public void setGruposCoordenados(List<Grupo> gruposCoordenados) {
         this.gruposCoordenados = gruposCoordenados;
     }
+
     public void setGruposIntegrados(List<Grupo> gruposIntegrados) {
         this.gruposIntegrados = gruposIntegrados;
     }
+
     public void setGruposConvidado(List<Grupo> gruposConvidado) {
         this.gruposConvidado = gruposConvidado;
     }
 
-  
+
 }
