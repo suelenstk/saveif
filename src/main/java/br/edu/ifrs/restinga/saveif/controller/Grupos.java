@@ -46,12 +46,20 @@ public class Grupos {
         }
     }
     
-    @RequestMapping(path="/grupos/integrantes", method = RequestMethod.GET)
-    public Grupo pesquisaPorIntegrantes(@RequestParam int id) throws Exception {
-        Usuario igual = new Usuario();
-        igual.setId(id);
-        return (GrupoDAO.findByIntegrantesGrupo(igual));
-    }
+   
+   @RequestMapping(path="/grupos/integrantes/{id}", method = RequestMethod.GET)
+   @ResponseStatus(HttpStatus.OK)
+   public Iterable<Grupo> pesquisaPorIntegrantes(@RequestParam(required = false, defaultValue = "0") int pagina,
+           @PathVariable int id) throws Exception {
+       
+       PageRequest pageRequest = new PageRequest(pagina, 5);
+       
+       Usuario igual = new Usuario();
+       igual.setId(id);       
+      
+       return  GrupoDAO.findByIntegrantesGrupo(igual,pageRequest);    
+   }
+   
     
     @PreAuthorize("hasAuthority('administrador')")
     @RequestMapping(path="/grupos", method = RequestMethod.POST)
