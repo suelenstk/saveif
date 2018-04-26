@@ -48,21 +48,14 @@ public class Usuarios {
     @Autowired
     UsuarioDAO usuarioDAO;
 
-    @PreAuthorize("hasAuthority('administrador')")
-    @RequestMapping(path = "/usuarios", method = RequestMethod.GET)
-    public Iterable<Usuario> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
-        PageRequest pageRequest = new PageRequest(pagina, 5);
-        return usuarioDAO.findAll(pageRequest);
-    }
 
     @RequestMapping(path = "/usuarios/listar", method = RequestMethod.GET)
-    public Iterable<Usuario> listarSemPaginacao(@RequestParam(required = false) String nome) {
+    public Iterable<Usuario> listarSemPaginacao(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestParam(required = false) String nome) {
         if (nome != null && !nome.isEmpty() )
             return usuarioDAO.findByNomeContaining(nome);
         else
             return usuarioDAO.findAll();
     }
-    
     
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
