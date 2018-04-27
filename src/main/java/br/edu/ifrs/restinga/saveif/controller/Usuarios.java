@@ -124,7 +124,7 @@ public class Usuarios {
             @PathVariable int id) throws Exception {
         
         PageRequest pageRequest = new PageRequest(pagina, 5);
-
+   
         Grupo igual = new Grupo();
         igual.setId(id);
 

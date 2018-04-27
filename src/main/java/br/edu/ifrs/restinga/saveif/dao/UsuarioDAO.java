@@ -1,5 +1,6 @@
 package br.edu.ifrs.restinga.saveif.dao;
 
+import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
