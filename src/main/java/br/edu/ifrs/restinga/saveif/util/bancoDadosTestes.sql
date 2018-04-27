@@ -88,6 +88,11 @@ VALUES
 (NULL, '2018-04-15', NULL, 'Grupo para um sistema de controle de concessionária de veículos.', NULL, 'Programação II', NULL, 'Público', '5', '2')
 ;
 
+INSERT INTO `grupo` (`id`, `data_criacao`, `data_delecao`, `descricao`, `imagem`, `nome`, `tipo_imagem`, `tipo_privacidade`, `categoria_id`, `dono_grupo_id`) 
+VALUES 
+(NULL, '2018-04-15', NULL, 'Grupo ajuda em programação I.', NULL, 'Programação I', NULL, 'Público', '5', '2')
+;
+
 INSERT INTO `atividade` (`id`, `nome`, `descricao`, `localizacao`, `data_atividade`) 
 VALUES 
 (NULL, 'Criação de serviço', 'Criar serviço tal.', 'IFRS', '2018-04-16');

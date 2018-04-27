@@ -42,6 +42,7 @@ public class Grupos {
     public void atualizar(@PathVariable int id, @RequestBody Grupo grupo) {
         if (GrupoDAO.existsById(id)) {
             grupo.setId(id);
+            grupo.setIntegrantesGrupo(grupo.getSolicitantesGrupo());
             GrupoDAO.save(grupo);
         }
     }
