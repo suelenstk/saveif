@@ -3,6 +3,7 @@ package br.edu.ifrs.restinga.saveif.controller;
 import br.edu.ifrs.restinga.saveif.aut.ForbiddenException;
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
 import br.edu.ifrs.restinga.saveif.dao.UsuarioDAO;
+import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
-
 
 @RestController
 @RequestMapping(path = "/api")
@@ -48,15 +48,15 @@ public class Usuarios {
     @Autowired
     UsuarioDAO usuarioDAO;
 
-
     @RequestMapping(path = "/usuarios/listar", method = RequestMethod.GET)
     public Iterable<Usuario> listarSemPaginacao(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestParam(required = false) String nome) {
-        if (nome != null && !nome.isEmpty() )
+        if (nome != null && !nome.isEmpty()) {
             return usuarioDAO.findByNomeContaining(nome);
-        else
+        } else {
             return usuarioDAO.findAll();
+        }
     }
-    
+
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Usuario> recuperar(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id) {
@@ -66,17 +66,17 @@ public class Usuarios {
 
             Optional<Usuario> findById = usuarioDAO.findById(id);
 
-            if (findById.isPresent())
+            if (findById.isPresent()) {
                 return ResponseEntity.ok(findById.get());
-            else
+            } else {
                 return ResponseEntity.notFound().build();
+            }
 
-
-        } else
+        } else {
             throw new ForbiddenException("Não é permitido acessar dados de outros usuários");
+        }
 
     }
-
 
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
@@ -109,13 +109,26 @@ public class Usuarios {
 
         String token = JWT.create()
                 .withClaim("id", usuarioAut.getUsuario().getId()).
-                        withExpiresAt(expira).
-                        sign(algorithm);
+                withExpiresAt(expira).
+                sign(algorithm);
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.set("token", token);
 
         return new ResponseEntity<>(usuarioAut.getUsuario(), respHeaders, HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/usuario/participantes/{id}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public Iterable<Usuario> listarParticipantes(@RequestParam(required = false,
+            defaultValue = "0") int pagina,
+            @PathVariable int id) throws Exception {
+        
+        PageRequest pageRequest = new PageRequest(pagina, 5);
+
+        Grupo igual = new Grupo();
+        igual.setId(id);
+
+        return usuarioDAO.findByGruposIntegrados(igual, pageRequest);
+    }
 
 }
