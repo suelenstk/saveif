@@ -137,15 +137,20 @@ VALUES
 ('1', '2')
 ;
 
+INSERT INTO `anexo` VALUES 
+(NULL, LOAD_FILE("/anexoTexte.JPG"),'imagem teste','Imagem')
+;
+
 INSERT INTO `post` (`id`, `data_delecao`, `data_postagem`, `texto`, `titulo`, `anexo_post_id`, `autor_post_id`) 
 VALUES 
-(NULL, NULL, '2018-04-15', 'Esse é o post inicial, vamos conversar sobre nosso projeto.', 'Primeiro post', NULL, '5')
+(NULL, NULL, '2018-04-15', 'Esse é o post inicial, vamos conversar sobre nosso projeto.', 'Primeiro post', '1', '5')
 ;
 
 INSERT INTO `topico_posts` (`topico_id`, `posts_id`) 
 VALUES 
 ('1', '1')
 ;
+
 
 
 

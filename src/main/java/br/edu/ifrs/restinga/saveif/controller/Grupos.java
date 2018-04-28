@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api")
 public class Grupos {
-    
+
     @Autowired
     GrupoDAO GrupoDAO;
 
@@ -36,7 +36,7 @@ public class Grupos {
         PageRequest pageRequest = new PageRequest(pagina, 5);
         return GrupoDAO.findAll(pageRequest);
     }
-    
+
     @RequestMapping(path = "/grupos/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public void atualizar(@PathVariable int id, @RequestBody Grupo grupo) {
@@ -46,27 +46,24 @@ public class Grupos {
             GrupoDAO.save(grupo);
         }
     }
-    
-   
-   @RequestMapping(path="/grupos/integrantes/{id}", method = RequestMethod.GET)
-   @ResponseStatus(HttpStatus.OK)
-   public Iterable<Grupo> pesquisaPorIntegrantes(@RequestParam(required = false, defaultValue = "0") int pagina,
-           @PathVariable int id) throws Exception {
-       
-       PageRequest pageRequest = new PageRequest(pagina, 5);
-       
-       Usuario igual = new Usuario();
-       igual.setId(id);       
-      
-       return  GrupoDAO.findByIntegrantesGrupo(igual,pageRequest);    
-   }
-   
-    
+
+    @RequestMapping(path = "/grupos/integrantes/{id}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public Iterable<Grupo> pesquisaPorIntegrantes(@RequestParam(required = false, defaultValue = "0") int pagina,
+            @PathVariable int id) throws Exception {
+
+        PageRequest pageRequest = new PageRequest(pagina, 5);
+
+        Usuario igual = new Usuario();
+        igual.setId(id);
+
+        return GrupoDAO.findByIntegrantesGrupo(igual, pageRequest);
+    }
+
     @PreAuthorize("hasAuthority('administrador')")
-    @RequestMapping(path="/grupos", method = RequestMethod.POST)
+    @RequestMapping(path = "/grupos", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Grupo criar(@RequestBody Grupo grupo)
-    {
+    public Grupo criar(@RequestBody Grupo grupo) {
         grupo.setId(0);
         Grupo grupoSalvo = GrupoDAO.save(grupo);
         return grupoSalvo;
