@@ -58,7 +58,7 @@ public class Grupo implements Serializable{
     private Date dataDelecao;     
 
     @ManyToOne
-    @JoinColumn(nullable = false)    
+    //@JoinColumn(nullable = false)    //Temporariamente o valor podera ser nulo
     private Categoria categoria;    
    
     @JsonIgnore
@@ -182,6 +182,8 @@ public class Grupo implements Serializable{
         this.topicos = topicos;
     }
     public void setDonoGrupo(Usuario donoGrupo) {
+        if (!this.coordenadoresGrupo.contains(donoGrupo))
+            this.coordenadoresGrupo.add(donoGrupo);
         this.donoGrupo = donoGrupo;
     }
     public void setCoordenadoresGrupo(List<Usuario> coordenadoresGrupo) {
