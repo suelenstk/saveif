@@ -59,7 +59,7 @@ INSERT INTO `usuario` (`id`, `cpf`, `data_delecao`, `data_insercao`, `data_nasci
 VALUES 
 (NULL, '61411507053', NULL, '2018-04-15', '1980-03-15', 'agatha.moreira@restinga.ifrs.edu.br', NULL, 'Agatha Isabella Moreira', '$2a$04$0x9YevF53Ji919pUDvxCjOdnbnrO64/vkONzEalYuwJwufHlZcgZe', NULL, NULL, 'professor', NULL),
 (NULL, '84059336033', NULL, '2018-04-15', '1990-01-08', 'eduardo.peixoto@restinga.ifrs.edu.br', NULL, 'Eduardo Caleb Peixoto', '$2a$04$6ywdKN0jida4aZHyEu.xge1ktOtrBJ5TMkpUy3a3oVNiED6Vh.Rgq', NULL, NULL, 'servidor', NULL),
-(NULL, NULL, NULL, '2018-04-15', '1970-05-25', 'fabio.santos@restinga.ifrs.edu.br', NULL, 'Fábio Sebastião Manuel Santos', '$2a$04$3JMZIXyY1VO0Y6dNjRoqf.LMfgb2ggyDrTU0PCPpyl2TW6qpA9CgS', 'Sou um professor apaixonado pela docência e por tecnologia.', NULL, 'professor', NULL),
+(NULL, NULL, NULL, '2018-04-15', '1970-05-25', 'fabio.santos@restinga.ifrs.edu.br', NULL, 'Fábio Sebastião Santos', '$2a$04$3JMZIXyY1VO0Y6dNjRoqf.LMfgb2ggyDrTU0PCPpyl2TW6qpA9CgS', 'Sou um professor apaixonado pela docência e por tecnologia.', NULL, 'professor', NULL),
 (NULL, NULL, NULL, '2018-04-15', '1995-05-18', 'sjlcampos@restinga.ifrs.edu.br', NULL, 'Stella Julia Laís Campos', '$2a$04$0vYH5wkLm6CxNFLq.CnvGOT8V2zDefC29YtV1jFbzWcfVIdYD4Ln.', 'Amo música, cinema e dança.', NULL, 'estudante', '1'), 
 (NULL, NULL, NULL, '2018-04-15', '2000-09-14', 'hbpgoncalves@restinga.ifrs.edu.br', NULL, 'Hugo Bryan Pietro Gonçalves', '$2a$04$qYoIkwLHl7qxD7KyaghsduF6mGb8x3MJJLsV3DsutrWMJIMF9tBXS', 'Jogador de LoW', NULL, 'estudante', '14')
 
