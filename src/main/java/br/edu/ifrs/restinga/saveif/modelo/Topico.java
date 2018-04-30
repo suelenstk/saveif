@@ -69,6 +69,36 @@ public class Topico implements Serializable {
     public Usuario getCriadorTopico() {
         return criadorTopico;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setDataCriacao(Date dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public void setDataFinalizacao(Date dataFinalizacao) {
+        this.dataFinalizacao = dataFinalizacao;
+    }
+
+    public void setDataDelecao(Date dataDelecao) {
+        this.dataDelecao = dataDelecao;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void setCriadorTopico(Usuario criadorTopico) {
+        this.criadorTopico = criadorTopico;
+    }
+    
+    
     
     
     
