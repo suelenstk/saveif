@@ -58,7 +58,7 @@ public class Grupos {
             integrantes = busca.getIntegrantesGrupo();
             
             solicitacoes.add(grupo.getSolicitantesGrupo().get(0));
-            integrantes.add(grupo.getIntegrantesGrupo().get(0));
+            integrantes.add(grupo.getSolicitantesGrupo().get(0));
             
             grupo.setIntegrantesGrupo(integrantes);
             grupo.setSolicitantesGrupo(solicitacoes);
