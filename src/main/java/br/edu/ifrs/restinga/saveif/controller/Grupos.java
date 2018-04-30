@@ -8,6 +8,7 @@ package br.edu.ifrs.restinga.saveif.controller;
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -37,14 +38,33 @@ public class Grupos {
         return GrupoDAO.findAll(pageRequest);
     }
 
-    @RequestMapping(path = "/grupos/{id}", method = RequestMethod.PUT)
-    @ResponseStatus(HttpStatus.OK)
-    public void atualizar(@PathVariable int id, @RequestBody Grupo grupo) {
-        if (GrupoDAO.existsById(id)) {
-            grupo.setId(id);
-            grupo.setIntegrantesGrupo(grupo.getSolicitantesGrupo());
-            GrupoDAO.save(grupo);
+    @RequestMapping(path = "/grupos/solicitar/{id}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void solicitarInscricao(@PathVariable int id, @RequestBody Grupo grupo) {
+        
+        List<Usuario> solicitacoes;
+        List<Usuario> integrantes;
+        
+        Grupo busca = GrupoDAO.findById(grupo.getId());
+        
+        if (busca.getSolicitantesGrupo().isEmpty()) {
+            
+            grupo.setIntegrantesGrupo (grupo.getSolicitantesGrupo());
+            
+        } else {
+            
+            solicitacoes = busca.getSolicitantesGrupo();
+            
+            integrantes = busca.getIntegrantesGrupo();
+            
+            solicitacoes.add(grupo.getSolicitantesGrupo().get(0));
+            integrantes.add(grupo.getIntegrantesGrupo().get(0));
+            
+            grupo.setIntegrantesGrupo(integrantes);
+            grupo.setSolicitantesGrupo(solicitacoes);
         }
+        
+        GrupoDAO.save(grupo);
     }
 
     @RequestMapping(path = "/grupos/integrantes/{id}", method = RequestMethod.GET)

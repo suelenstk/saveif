@@ -20,5 +20,6 @@ import org.springframework.stereotype.Repository;
 public interface GrupoDAO extends PagingAndSortingRepository<Grupo, Integer>{
     
     Page<Grupo> findByIntegrantesGrupo(Usuario integrantes, Pageable pageable);  
-   
+    Grupo findById(int id);
+
 }
