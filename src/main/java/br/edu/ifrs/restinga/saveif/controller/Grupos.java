@@ -1,14 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.ifrs.restinga.saveif.controller;
 
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
+import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
+import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,16 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- *
- * @author gustavo e eduarda
- */
+
 @RestController
 @RequestMapping(path = "/api")
 public class Grupos {
 
     @Autowired
     GrupoDAO grupoDAO;
+    
+    @Autowired
+    TopicoDAO topicoDAO;
 
     @RequestMapping(path = "/grupos", method = RequestMethod.GET)
     public Iterable<Grupo> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
@@ -97,8 +95,18 @@ public class Grupos {
     {
         grupo.setId(0);
         grupo.setDonoGrupo(usuarioAut.getUsuario());
-
-
+        
+        
+        Topico geral = new Topico();
+        geral.setId(0);
+        geral.setNome("Geral");
+        geral.setCriadorTopico(usuarioAut.getUsuario());
+        topicoDAO.save(geral);
+        
+        ArrayList<Topico> topicos = new ArrayList<>();
+        topicos.add(geral);
+        grupo.setTopicos(topicos);
+        
         Grupo grupoSalvo = grupoDAO.save(grupo);
         return grupoSalvo;
     }
