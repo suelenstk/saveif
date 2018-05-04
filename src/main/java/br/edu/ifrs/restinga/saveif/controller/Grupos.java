@@ -95,8 +95,7 @@ public class Grupos {
     {
         grupo.setId(0);
         grupo.setDonoGrupo(usuarioAut.getUsuario());
-        
-        
+              
         Topico geral = new Topico();
         geral.setId(0);
         geral.setNome("Geral");

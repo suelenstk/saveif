@@ -47,7 +47,6 @@ public class Topico implements Serializable {
     @JoinColumn(nullable = false)
     private Usuario criadorTopico;
 
-
     public int getId() {
         return id;
     }

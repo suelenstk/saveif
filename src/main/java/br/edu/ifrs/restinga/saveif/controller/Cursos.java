@@ -55,6 +55,7 @@ public class Cursos {
     public void atualizar(@PathVariable int id, @RequestBody Curso curso) throws Exception {
         if (cursoDAO.existsById(id)) {
             curso.setId(id);
+            
             cursoDAO.save(curso);
         }
     }

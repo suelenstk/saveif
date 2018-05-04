@@ -6,10 +6,15 @@
 package br.edu.ifrs.restinga.saveif.controller;
 
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
+import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.dao.PostDAO;
+import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Anexo;
 import br.edu.ifrs.restinga.saveif.modelo.Post;
+import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +41,9 @@ public class Posts {
 
     @Autowired
     PostDAO postDAO;
+    
+    @Autowired
+    TopicoDAO topicoDAO;
 
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Iterable<Post> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
@@ -49,8 +57,18 @@ public class Posts {
     {
         post.setId(0);
         post.setAutorPost(usuarioAut.getUsuario());
-
+        
         Post postSalvo = postDAO.save(post);
+        
+        Optional<Topico> findById = topicoDAO.findById(1);
+        
+            if (findById.isPresent()){
+                List<Post> posts = new ArrayList<>();
+                posts = findById.get().getPosts();
+                posts.add (post);
+                findById.get().setPosts(posts);
+        }
+                
         return postSalvo;
     }
     
