@@ -6,15 +6,25 @@
 package br.edu.ifrs.restinga.saveif.dao;
 
 import br.edu.ifrs.restinga.saveif.modelo.Post;
+import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author gustavo e eduarda
- */
 @Repository
 public interface PostDAO extends PagingAndSortingRepository<Post, Integer>{
-    
+    @Query(nativeQuery = true,
+    value = "SELECT * FROM post p \n" +
+                    "INNER JOIN topico_posts tp ON ( p.id = tp.posts_id) \n" +
+                    "INNER JOIN topico t ON (tp.topico_id = t.id)\n" +
+                    "INNER JOIN grupo_topicos gp ON ( t.id = gp.topicos_id)\n" +
+                    "INNER JOIN grupo g ON (gp.grupo_id = g.id)\n" +
+                    "WHERE \n" +
+                    "g.id = :idgrupo AND\n" +
+                    "t.nome = \"Geral\" "
+            + "ORDER BY p.id DESC;"
+    )
+    public List<Post> findGeral(@Param("idgrupo") int id);
     
 }

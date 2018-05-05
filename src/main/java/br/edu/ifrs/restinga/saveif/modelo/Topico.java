@@ -19,6 +19,16 @@ import javax.persistence.TemporalType;
 @Entity
 public class Topico implements Serializable {
 
+    public Topico() {
+    }
+
+    public Topico(int id, String nome, Usuario criadorTopico) {
+        this.id = id;
+        this.nome = nome;
+        this.criadorTopico = criadorTopico;
+    }
+    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
@@ -73,7 +83,14 @@ public class Topico implements Serializable {
         this.id = id;
     }
 
-    public void setNome(String nome) {
+    public void setNome(String nome) throws Exception {
+        if (nome == null || nome.isEmpty())
+            throw new Exception("O campo nome é de preenchimento obrigatório.");
+        else if (nome.equalsIgnoreCase("Geral"))
+            throw new Exception("Nome de tópico inválido");  
+        else if (nome.length() > 80)
+            throw new Exception("Excedido o tamanho máximo para o campo nome");
+        
         this.nome = nome;
     }
 

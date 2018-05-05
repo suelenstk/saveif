@@ -96,10 +96,7 @@ public class Grupos {
         grupo.setId(0);
         grupo.setDonoGrupo(usuarioAut.getUsuario());
               
-        Topico geral = new Topico();
-        geral.setId(0);
-        geral.setNome("Geral");
-        geral.setCriadorTopico(usuarioAut.getUsuario());
+        Topico geral = new Topico(0, "Geral", usuarioAut.getUsuario());
         topicoDAO.save(geral);
         
         ArrayList<Topico> topicos = new ArrayList<>();

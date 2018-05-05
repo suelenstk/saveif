@@ -45,6 +45,13 @@ public class Posts {
     @Autowired
     TopicoDAO topicoDAO;
 
+    @RequestMapping(path = "/grupos/{id}/geral", method = RequestMethod.GET)
+    public Iterable<Post> lista(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) {
+        PageRequest pageRequest = new PageRequest(pagina, 5);
+        
+        return postDAO.findGeral(id);
+    }
+    
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Iterable<Post> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
         PageRequest pageRequest = new PageRequest(pagina, 5);

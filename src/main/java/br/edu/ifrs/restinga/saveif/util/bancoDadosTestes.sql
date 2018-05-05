@@ -40,13 +40,14 @@ VALUES
 
 INSERT INTO `categoria` (`id`, `nome`) 
 VALUES 
-(NULL, 'Informática'), 
-(NULL, 'Lazer'),
-(NULL, 'Eletrônica'), 
-(NULL, 'Linguagens'),
-(NULL, 'Desenvolvimento de sistemas'), 
-(NULL, 'Gestão de pessoas'),
-(NULL, 'Empreendendorismo')
+(1, 'Outros'), 
+(2, 'Informática'), 
+(3, 'Lazer'),
+(4, 'Eletrônica'), 
+(5, 'Linguagens'),
+(6, 'Desenvolvimento de sistemas'), 
+(7, 'Gestão de pessoas'),
+(8, 'Empreendendorismo')
 
 ;
 
@@ -85,12 +86,10 @@ VALUES
 
 INSERT INTO `grupo` (`id`, `data_criacao`, `data_delecao`, `descricao`, `imagem`, `nome`, `tipo_imagem`, `tipo_privacidade`, `categoria_id`, `dono_grupo_id`) 
 VALUES 
-(NULL, '2018-04-15', NULL, 'Grupo para um sistema de controle de concessionária de veículos.', NULL, 'Programação II', NULL, 'Público', '5', '2')
-;
+(1, '2018-04-15', NULL, 'Grupo para um sistema de controle de concessionária de veículos.', NULL, 'Programação II', NULL, 'aberto', '5', '2'),
+(2, '2018-04-15', NULL, 'Grupo ajuda em programação I.', NULL, 'Programação I', NULL, 'aberto', '5', '3'),
+(3, '2018-04-20', NULL, 'Grupo de Eletrônica.', NULL, 'Eletrônica Digital', NULL, 'aberto', '4', '4')
 
-INSERT INTO `grupo` (`id`, `data_criacao`, `data_delecao`, `descricao`, `imagem`, `nome`, `tipo_imagem`, `tipo_privacidade`, `categoria_id`, `dono_grupo_id`) 
-VALUES 
-(NULL, '2018-04-15', NULL, 'Grupo ajuda em programação I.', NULL, 'Programação I', NULL, 'Público', '5', '2')
 ;
 
 INSERT INTO `atividade` (`id`, `nome`, `descricao`, `localizacao`, `data_atividade`) 
@@ -100,25 +99,10 @@ VALUES
 
 INSERT INTO `grupo_coordenadores_grupo` (`grupos_coordenados_id`, `coordenadores_grupo_id`) 
 VALUES 
-('1', '5')
-;
-
-INSERT INTO `topico` (`id`, `data_criacao`, `data_delecao`, `data_finalizacao`, `nome`, `criador_topico_id`) 
-VALUES 
-(NULL, '2018-04-15', NULL, NULL, 'Geral', '5'),
-(NULL, '2018-04-15', NULL, NULL, 'FrontEnd', '5')
-;
-
-INSERT INTO `grupo_topicos` (`grupo_id`, `topicos_id`) 
-VALUES 
-('1', '1'), 
-('1', '2')
-;
-
-INSERT INTO `topico` (`id`, `data_criacao`, `data_delecao`, `data_finalizacao`, `nome`, `criador_topico_id`) 
-VALUES 
-(NULL, '2018-04-15', NULL, NULL, 'Geral', '5'),
-(NULL, '2018-04-15', NULL, NULL, 'FrontEnd', '5')
+('1', '2'),
+('1', '5'),
+('2', '3'),
+('3', '4')
 ;
 
 INSERT INTO `grupo_integrantes_grupo` (`grupos_integrados_id`, `integrantes_grupo_id`) 
@@ -137,22 +121,75 @@ VALUES
 ('1', '2')
 ;
 
+
+
+
+
+
+INSERT INTO `topico` (`id`, `data_criacao`, `data_delecao`, `data_finalizacao`, `nome`, `criador_topico_id`) 
+VALUES 
+(1, '2018-04-15', NULL, NULL, 'Geral', '2'),
+(2, '2018-04-15', NULL, NULL, 'FrontEnd', '5'),
+
+(3, '2018-04-15', NULL, NULL, 'Geral', '3'),
+(4, '2018-04-15', NULL, NULL, 'React', '3'),
+
+(5, '2018-04-15', NULL, NULL, 'Geral', '4'),
+(6, '2018-04-15', NULL, NULL, 'Circuitos', '4')
+;
+
+INSERT INTO `grupo_topicos` (`grupo_id`, `topicos_id`) 
+VALUES 
+('1', '1'), 
+('1', '2'),
+
+('2', '3'), 
+('2', '4'), 
+
+('3', '5'), 
+('3', '6')
+;
+
+
+
+
+
 INSERT INTO `anexo` VALUES 
-(NULL, LOAD_FILE("/anexoTexte.JPG"),'imagem teste','Imagem')
+(1, LOAD_FILE("/anexoTexte.JPG"),'imagem teste','jpeg')
 ;
 
 INSERT INTO `post` (`id`, `data_delecao`, `data_postagem`, `texto`, `titulo`, `anexo_post_id`, `autor_post_id`) 
 VALUES 
-(NULL, NULL, '2018-04-15', 'Esse é o post inicial, vamos conversar sobre nosso projeto.', 'Primeiro post', '1', '5')
+# GRUPO 1
+# Topico Geral - id = 1
+(1, NULL, '2018-04-15', 'Esse é o post inicial, vamos conversar sobre nosso projeto', 'Geral - Primeiro post', '1', '2'),
+(2, NULL, '2018-04-15', 'Sim, vamos !', 'Geral Sim', '1', '5'),
+# Topico FrontEnd - id = 2
+(3, NULL, '2018-04-15', 'Que acham de usarmos o modelo de front da aula?', 'FrontEnd - Front', '1', '3'),
+
+# GRUPO 2
+# Topico Geral - id = 3
+(4, NULL, '2018-04-15', 'E ai por onde começamos o trabalho?', 'Geral - Começo', '1', '3'),
+# Topico React - id = 4
+(5, NULL, '2018-04-15', 'Como fica esse React?', 'React - O que acham', '1', '3'),
+
+# GRUPO 3
+# Topico Geral - id = 5
+(6, NULL, '2018-04-15', 'Bom dia começando nosso grupo de eletrônica', 'Geral - Bom dia', '1', '4'),
+(7, NULL, '2018-04-15', 'Mandem suas dúvidas por aqui', 'Geral Dúvidas', '1', '4'),
+# Topico Circuitos - id = 6
+(8, NULL, '2018-04-15', 'Vocês tem Arduino?', 'Circuitos - Arduino', '1', '4')
 ;
 
 INSERT INTO `topico_posts` (`topico_id`, `posts_id`) 
 VALUES 
-('1', '1')
+('1', '1'),
+('1', '2'),
+('2', '3'),
+
+('3', '4'),
+('4', '5'),
+('5', '6'),
+('5', '7'),
+('6', '8')
 ;
-
-
-
-
-
-
