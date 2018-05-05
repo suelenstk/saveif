@@ -46,11 +46,20 @@ public class Posts {
     TopicoDAO topicoDAO;
 
     @RequestMapping(path = "/grupos/{id}/geral", method = RequestMethod.GET)
-    public Iterable<Post> lista(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) {
+    public Iterable<Post> listarGeral(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) {
         PageRequest pageRequest = new PageRequest(pagina, 5);
         
         return postDAO.findGeral(id);
     }
+    
+    @RequestMapping(path = "/grupos/{id}/posts/{idt}", method = RequestMethod.GET)
+    public Iterable<Post> listarPorTopico(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id, @PathVariable int idt) {
+        PageRequest pageRequest = new PageRequest(pagina, 5);
+        
+        return postDAO.findPorTopico(id, idt);
+    }
+    
+    
     
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Iterable<Post> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {

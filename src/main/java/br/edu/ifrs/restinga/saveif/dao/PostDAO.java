@@ -27,4 +27,21 @@ public interface PostDAO extends PagingAndSortingRepository<Post, Integer>{
     )
     public List<Post> findGeral(@Param("idgrupo") int id);
     
+    
+    @Query(nativeQuery = true,
+    value = "SELECT * FROM post p \n" +
+                    "INNER JOIN topico_posts tp ON ( p.id = tp.posts_id) \n" +
+                    "INNER JOIN topico t ON (tp.topico_id = t.id)\n" +
+                    "INNER JOIN grupo_topicos gp ON ( t.id = gp.topicos_id)\n" +
+                    "INNER JOIN grupo g ON (gp.grupo_id = g.id)\n" +
+                    "WHERE \n" +
+                    "g.id = :idgrupo AND\n" +
+                    "t.id = :idtopico "
+            + "ORDER BY p.id DESC;"
+    )
+    public List<Post> findPorTopico(@Param("idgrupo") int idg, @Param("idtopico") int idt);
+    
+    
+    
+    
 }
