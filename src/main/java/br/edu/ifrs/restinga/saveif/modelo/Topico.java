@@ -19,16 +19,6 @@ import javax.persistence.TemporalType;
 @Entity
 public class Topico implements Serializable {
 
-    public Topico() {
-    }
-
-    public Topico(int id, String nome, Usuario criadorTopico) {
-        this.id = id;
-        this.nome = nome;
-        this.criadorTopico = criadorTopico;
-    }
-    
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
@@ -56,6 +46,18 @@ public class Topico implements Serializable {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Usuario criadorTopico;
+    
+    public Topico() {
+    }
+
+    public Topico(int id, String nome, Usuario criadorTopico) {
+        this.id = id;
+        this.nome = nome;
+        this.criadorTopico = criadorTopico;
+    }
+    
+    
+    
 
     public int getId() {
         return id;

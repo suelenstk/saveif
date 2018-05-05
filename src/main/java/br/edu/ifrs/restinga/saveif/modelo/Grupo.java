@@ -65,7 +65,7 @@ public class Grupo implements Serializable{
     @OneToMany(orphanRemoval=true)
     private List<Atividade> atividades;  
     
-   
+    @JsonIgnore
     @OneToMany(orphanRemoval=true)
     private List<Topico> topicos;  
     

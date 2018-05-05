@@ -11,7 +11,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,13 +51,16 @@ public class Grupos {
     public void solicitarInscricao(@PathVariable int id, @RequestBody Grupo grupo) {
         
         List<Usuario> solicitacoes;
-        List<Usuario> integrantes;
+        List<Usuario> integrantes;      
         
         Grupo busca = grupoDAO.findById(grupo.getId());
+        
+        List<Topico> topicos = busca.getTopicos();
         
         if (busca.getSolicitantesGrupo().isEmpty()) {
             
             grupo.setIntegrantesGrupo (grupo.getSolicitantesGrupo());
+            
             
         } else {
             
@@ -72,6 +74,8 @@ public class Grupos {
             grupo.setIntegrantesGrupo(integrantes);
             grupo.setSolicitantesGrupo(solicitacoes);
         }
+        
+        grupo.setTopicos(topicos);
         
         grupoDAO.save(grupo);
     }
