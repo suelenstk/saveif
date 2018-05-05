@@ -40,8 +40,10 @@ public class Topicos {
     
     @RequestMapping(path="/topicos", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Topico inserir(@RequestBody Topico topico, @AuthenticationPrincipal UsuarioAut usuarioAut)
+    public Topico inserir(@RequestBody Topico topico, @AuthenticationPrincipal UsuarioAut usuarioAut) throws Exception
     {
+        if (topico.getNome().equalsIgnoreCase("Geral"))
+            throw new Exception("Nome de tópico inválido");  
         topico.setId(0);
         topico.setCriadorTopico(usuarioAut.getUsuario());
              

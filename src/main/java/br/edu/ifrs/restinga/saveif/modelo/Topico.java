@@ -87,9 +87,7 @@ public class Topico implements Serializable {
 
     public void setNome(String nome) throws Exception {
         if (nome == null || nome.isEmpty())
-            throw new Exception("O campo nome é de preenchimento obrigatório.");
-        else if (nome.equalsIgnoreCase("Geral"))
-            throw new Exception("Nome de tópico inválido");  
+            throw new Exception("O campo nome é de preenchimento obrigatório."); 
         else if (nome.length() > 80)
             throw new Exception("Excedido o tamanho máximo para o campo nome");
         
