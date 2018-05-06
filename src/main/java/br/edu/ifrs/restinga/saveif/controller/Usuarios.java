@@ -104,12 +104,12 @@ public class Usuarios {
             throws IllegalArgumentException, UnsupportedEncodingException {
         Algorithm algorithm = Algorithm.HMAC256(SEGREDO);
         Calendar agora = Calendar.getInstance();
-        agora.add(Calendar.MINUTE, 4);
+        agora.add(Calendar.HOUR, 24);
         Date expira = agora.getTime();
 
         String token = JWT.create()
                 .withClaim("id", usuarioAut.getUsuario().getId()).
-                withExpiresAt(expira).
+//                withExpiresAt(expira).
                 sign(algorithm);
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.set("token", token);

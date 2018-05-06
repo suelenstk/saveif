@@ -141,11 +141,12 @@ public class Grupo implements Serializable{
     }
 
      public Grupo() {
-         atividades = new ArrayList<>();
-         topicos = new ArrayList<>();
-         coordenadoresGrupo = new ArrayList<>();
-         solicitantesGrupo = new ArrayList<>();
-         convitesGrupo = new ArrayList<>();        
+        atividades = new ArrayList<>();
+        topicos = new ArrayList<>();
+        coordenadoresGrupo = new ArrayList<>();
+        integrantesGrupo = new ArrayList<>(); 
+        solicitantesGrupo = new ArrayList<>();
+        convitesGrupo = new ArrayList<>();        
     }
      
     public void setId(int id) {
@@ -184,6 +185,10 @@ public class Grupo implements Serializable{
     public void setDonoGrupo(Usuario donoGrupo) {
         if (!this.coordenadoresGrupo.contains(donoGrupo))
             this.coordenadoresGrupo.add(donoGrupo);
+        
+        if (!this.integrantesGrupo.contains(donoGrupo))
+            this.integrantesGrupo.add(donoGrupo);
+        
         this.donoGrupo = donoGrupo;
     }
     public void setCoordenadoresGrupo(List<Usuario> coordenadoresGrupo) {
