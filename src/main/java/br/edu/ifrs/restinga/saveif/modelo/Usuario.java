@@ -91,6 +91,12 @@ public class Usuario implements Serializable {
     @ManyToMany(mappedBy = "convitesGrupo")
     private List<Grupo> gruposConvidado;
 
+    public Usuario() {
+    }
+    
+    public Usuario(int id) {
+        this.id = id;
+    }
 
     public int getId() {
         return id;

@@ -76,11 +76,9 @@ public class Grupo implements Serializable{
     @JsonIgnore
     @ManyToMany
     private List<Usuario> coordenadoresGrupo;   
-          
-    @JsonIgnore
-    @ManyToMany
-    private List<Usuario> integrantesGrupo;
     
+    @ManyToMany
+    private List<Usuario> integrantesGrupo;   
     
     @ManyToMany
     private List<Usuario> solicitantesGrupo; 
