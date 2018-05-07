@@ -63,8 +63,6 @@ public class Posts {
         return postDAO.findPorTopico(id, idt);
     }
     
-    
-    
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Iterable<Post> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
         PageRequest pageRequest = new PageRequest(pagina, 20);

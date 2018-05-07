@@ -42,4 +42,5 @@ public interface PostDAO extends PagingAndSortingRepository<Post, Integer>{
     )
     public List<Post> findPorTopico(@Param("idgrupo") int idg, @Param("idtopico") int idt);
     
+    
 }
