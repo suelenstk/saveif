@@ -33,15 +33,4 @@ public class Categorias {
     public Iterable<Categoria> listar() {
         return categoriaDAO.findAll();
     }
-    
-    @RequestMapping(path = "/categorias/{id}", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Categoria> recuperar(@PathVariable int id) {
-
-        Optional<Categoria> findById = categoriaDAO.findById(id);
-        if (findById.isPresent())
-            return ResponseEntity.ok(findById.get());
-        else
-            return ResponseEntity.notFound().build();
-    }    
 }

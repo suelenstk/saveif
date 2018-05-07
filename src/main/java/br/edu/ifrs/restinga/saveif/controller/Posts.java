@@ -10,6 +10,7 @@ import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.dao.PostDAO;
 import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Anexo;
+import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Post;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import java.io.IOException;
@@ -44,6 +45,9 @@ public class Posts {
     
     @Autowired
     TopicoDAO topicoDAO;
+    
+    @Autowired
+    GrupoDAO grupoDAO;
 
     @RequestMapping(path = "/grupos/{id}/geral", method = RequestMethod.GET)
     public Iterable<Post> listarGeral(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) {
@@ -67,23 +71,31 @@ public class Posts {
         return postDAO.findAll(pageRequest);
     }
     
-    @RequestMapping(path="/posts", method = RequestMethod.POST)
+    @RequestMapping(path="/posts/{idGrupo}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Post inserir(@RequestBody Post post, @AuthenticationPrincipal UsuarioAut usuarioAut)
+    public Post inserir(@RequestBody Post post, @AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo)
     {
         post.setId(0);
         post.setAutorPost(usuarioAut.getUsuario());
         
         Post postSalvo = postDAO.save(post);
         
-        Optional<Topico> findById = topicoDAO.findById(1);
+        Grupo grupoAtual = grupoDAO.findById(idGrupo);
         
-            if (findById.isPresent()){
-                List<Post> posts = new ArrayList<>();
-                posts = findById.get().getPosts();
-                posts.add (post);
-                findById.get().setPosts(posts);
-        }
+        List<Topico> topicos = new ArrayList<>();
+        topicos = grupoAtual.getTopicos();
+        
+        List<Post> posts = new ArrayList<>();
+        posts = topicos.get(0).getPosts();
+        
+        posts.add (post);
+        
+        topicos.get(0).setPosts(posts);
+        
+        grupoAtual.setTopicos (topicos);
+        
+        topicoDAO.save(topicos.get(0));
+        grupoDAO.save(grupoAtual);
                 
         return postSalvo;
     }

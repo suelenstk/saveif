@@ -16,4 +16,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoriaDAO extends PagingAndSortingRepository<Categoria, Integer>{
     
+    Categoria findById(int id);
 }

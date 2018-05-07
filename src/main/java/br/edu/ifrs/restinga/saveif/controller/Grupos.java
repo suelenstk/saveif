@@ -1,13 +1,16 @@
 package br.edu.ifrs.restinga.saveif.controller;
 
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
+import br.edu.ifrs.restinga.saveif.dao.CategoriaDAO;
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
+import br.edu.ifrs.restinga.saveif.modelo.Categoria;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,9 @@ public class Grupos {
     
     @Autowired
     TopicoDAO topicoDAO;
+    
+    @Autowired
+    CategoriaDAO categoriaDAO;
 
     @RequestMapping(path = "/grupos", method = RequestMethod.GET)
     public Iterable<Grupo> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
@@ -37,11 +43,14 @@ public class Grupos {
         return grupoDAO.findAll(pageRequest);
     }
     
-    @RequestMapping(path = "/grupos/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/grupos/{id}/{idCategoria}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void atualizar(@PathVariable int id, @RequestBody Grupo grupo) {
+    public void atualizar(@PathVariable int id, @RequestBody Grupo grupo, @PathVariable int idCategoria) {
         if (grupoDAO.existsById(id)) {
             grupo.setId(id);
+            Categoria categoria = categoriaDAO.findById(idCategoria);
+              
+            grupo.setCategoria(categoria);
             grupoDAO.save(grupo);
         }
     }
@@ -93,13 +102,17 @@ public class Grupos {
         return grupoDAO.findByIntegrantesGrupo(igual, pageRequest);
     }
 
-    @RequestMapping(path="/grupos", method = RequestMethod.POST)
+    @RequestMapping(path="/grupos/{idCategoria}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Grupo inserir(@RequestBody Grupo grupo, @AuthenticationPrincipal UsuarioAut usuarioAut)
+    public Grupo inserir(@RequestBody Grupo grupo, @AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idCategoria)
     {
         grupo.setId(0);
         grupo.setDonoGrupo(usuarioAut.getUsuario());
+        
+        Categoria categoria = categoriaDAO.findById(idCategoria);
               
+        grupo.setCategoria(categoria);
+        
         Topico geral = new Topico(0, "Geral", usuarioAut.getUsuario());
         topicoDAO.save(geral);
         

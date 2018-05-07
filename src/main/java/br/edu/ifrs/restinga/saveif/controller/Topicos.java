@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,25 +39,26 @@ public class Topicos {
         return topicoDAO.findAll();
     } 
     
-    @RequestMapping(path="/topicos", method = RequestMethod.POST)
+    @RequestMapping(path="/topicos/{idGrupo}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Topico inserir(@RequestBody Topico topico, @AuthenticationPrincipal UsuarioAut usuarioAut) throws Exception
+    public Topico inserir(@RequestBody Topico topico, @AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo) throws Exception
     {
         if (topico.getNome().equalsIgnoreCase("Geral"))
             throw new Exception("Nome de tópico inválido");  
         topico.setId(0);
         topico.setCriadorTopico(usuarioAut.getUsuario());
              
+        Grupo grupoAtual = grupoDAO.findById(idGrupo);
+        
         Topico topicoSalvo = topicoDAO.save(topico);
         
-        Grupo grupoAtual = grupoDAO.findById(1);
+        List<Topico> topicos = new ArrayList<>();
+        topicos = grupoAtual.getTopicos();
+        topicos.add (topico);
+         
+        grupoAtual.setTopicos(topicos);
         
-          
-                List<Topico> topicos = new ArrayList<>();
-                topicos = grupoAtual.getTopicos();
-                topicos.add (topico);
-                grupoAtual.setTopicos(topicos);
-      
+        grupoDAO.save(grupoAtual);
         
         return topicoSalvo;
     }

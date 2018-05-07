@@ -6,6 +6,7 @@
 package br.edu.ifrs.restinga.saveif.dao;
 
 import br.edu.ifrs.restinga.saveif.modelo.Post;
+import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -40,8 +41,5 @@ public interface PostDAO extends PagingAndSortingRepository<Post, Integer>{
             + "ORDER BY p.id DESC;"
     )
     public List<Post> findPorTopico(@Param("idgrupo") int idg, @Param("idtopico") int idt);
-    
-    
-    
     
 }
