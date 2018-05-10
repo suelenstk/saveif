@@ -8,6 +8,8 @@ package br.edu.ifrs.restinga.saveif.dao;
 import br.edu.ifrs.restinga.saveif.modelo.Post;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -27,7 +29,7 @@ public interface PostDAO extends PagingAndSortingRepository<Post, Integer>{
             + "ORDER BY p.id DESC;"
     )
     public List<Post> findGeral(@Param("idgrupo") int id);
-    
+       
     
     @Query(nativeQuery = true,
     value = "SELECT * FROM post p \n" +
@@ -41,6 +43,13 @@ public interface PostDAO extends PagingAndSortingRepository<Post, Integer>{
             + "ORDER BY p.id DESC;"
     )
     public List<Post> findPorTopico(@Param("idgrupo") int idg, @Param("idtopico") int idt);
+    
+    
+    @Query( "SELECT topico.posts FROM  Grupo grupo JOIN grupo.topicos topico  WHERE grupo.id = :idgrupo AND topico.nome='Geral'")
+    public Page<Post> findGeral(@Param("idgrupo") int id, Pageable pageable);
+    
+    @Query( "SELECT topico.posts FROM  Grupo grupo JOIN grupo.topicos topico  WHERE grupo.id = :idgrupo AND topico.id = :idtopico")
+    public List<Post> findPorTopico(@Param("idgrupo") int idg, @Param("idtopico") int idt, Pageable pageable);
     
     
 }

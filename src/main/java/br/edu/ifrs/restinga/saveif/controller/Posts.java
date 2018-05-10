@@ -32,10 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
-/**
- *
- * @author gustavo e eduarda
- */
 @RestController
 @RequestMapping(path = "/api")
 public class Posts {
@@ -53,14 +49,17 @@ public class Posts {
     public Iterable<Post> listarGeral(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) {
         PageRequest pageRequest = new PageRequest(pagina, 20);
         
-        return postDAO.findGeral(id);
+        return postDAO.findGeral(id);                           // TESTE SQL nativo
+//        return postDAO.findGeral(id, pageRequest);            // TESTE Spring Query     
     }
     
     @RequestMapping(path = "/grupos/{id}/posts/{idt}", method = RequestMethod.GET)
     public Iterable<Post> listarPorTopico(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id, @PathVariable int idt) {
         PageRequest pageRequest = new PageRequest(pagina, 20);
       
-        return postDAO.findPorTopico(id, idt);
+        return postDAO.findPorTopico(id, idt);                  // TESTE SQL nativo
+//        return postDAO.findPorTopico(id, idt, pageRequest);   // TESTE Spring Query 
+        
     }
     
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
