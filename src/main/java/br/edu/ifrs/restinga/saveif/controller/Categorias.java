@@ -31,6 +31,6 @@ public class Categorias {
 
     @RequestMapping(path = "/categorias", method = RequestMethod.GET)
     public Iterable<Categoria> listar() {
-        return categoriaDAO.findAll();
+        return categoriaDAO.findAllOrderByNome();
     }
 }
