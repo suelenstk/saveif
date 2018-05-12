@@ -70,7 +70,9 @@ public class Topicos {
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Topico>pesquisaPorTopicos(@RequestParam(required = false, defaultValue = "0") int pagina,@PathVariable int id) throws Exception{
          PageRequest pageRequest = new PageRequest(pagina, 10);
+         
+         return topicoDAO.findTopico(id);                  // TESTE SQL nativo       
+//         return topicoDAO.findTopico(id, pageRequest);  // TESTE Spring Query
                 
-         return topicoDAO.findTopico(id);
       }
 }
