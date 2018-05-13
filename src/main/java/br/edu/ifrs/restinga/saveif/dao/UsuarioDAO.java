@@ -12,8 +12,10 @@ public interface UsuarioDAO extends PagingAndSortingRepository<Usuario, Integer>
 
     Page<Usuario> findByNome(String nome, Pageable pageable);
     
-    Iterable<Usuario> findByNomeContaining(String nome); 
-    
+    Iterable<Usuario> findByNomeContaining(String nome);
+
+    Page<Usuario> findByNomeContainingOrderByNome(String nome, Pageable pageable);
+
     Page<Usuario> findByGruposIntegrados(Grupo integrantes, Pageable pageable);
 
     public Usuario findByEmail(String email);

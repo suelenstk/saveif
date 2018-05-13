@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,6 +53,19 @@ public class Usuarios {
             return usuarioDAO.findByNomeContaining(nome);
         } else {
             return usuarioDAO.findAll();
+        }
+    }
+
+    @RequestMapping(path = "/usuarios/pesquisar/nome", method = RequestMethod.GET)
+    public Iterable<Usuario> pesquisaPorNome(
+            @RequestParam(required = false) String igual,
+            @RequestParam(required = false) String contem,
+            @RequestParam(required = false, defaultValue = "0") int pagina) {
+        PageRequest pageRequest = new PageRequest(pagina, 8);
+        if (igual != null) {
+            return usuarioDAO.findByNome(igual, pageRequest);
+        } else {
+            return usuarioDAO.findByNomeContainingOrderByNome(contem, pageRequest);
         }
     }
 
@@ -110,7 +122,7 @@ public class Usuarios {
         String token = JWT.create()
                 .withClaim("id", usuarioAut.getUsuario().getId()).
 //                withExpiresAt(expira).
-                sign(algorithm);
+        sign(algorithm);
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.set("token", token);
 
@@ -121,10 +133,10 @@ public class Usuarios {
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Usuario> listarParticipantes(@RequestParam(required = false,
             defaultValue = "0") int pagina,
-            @PathVariable int id) throws Exception {
-        
+                                                 @PathVariable int id) throws Exception {
+
         PageRequest pageRequest = new PageRequest(pagina, 5);
-   
+
         Grupo igual = new Grupo();
         igual.setId(id);
 
