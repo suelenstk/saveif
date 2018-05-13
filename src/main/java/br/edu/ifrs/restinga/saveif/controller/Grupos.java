@@ -21,6 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -124,5 +133,40 @@ public class Grupos {
         Grupo grupoSalvo = grupoDAO.save(grupo);
         return grupoSalvo;
     }
+    
+    @RequestMapping(path = "/grupos/{id}/imagem", method = RequestMethod.POST)
+    public ResponseEntity<InputStreamResource>  inserirImagem(@PathVariable int id,
+                            @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
+        Grupo grupo = grupoDAO.findById(id);
+
+        try {
+            grupo.setTipoImagem(uploadfiles.getContentType());
+            grupo.setImagem(uploadfiles.getBytes());
+            grupoDAO.save(grupo);
+            return recuperarImagem(id);
+
+        } catch (IOException ex) {
+            
+            ex.printStackTrace();
+            throw new Exception("Erro ao salvar arquivo de imagem");
+        }
+    }
+
+    @RequestMapping(value = "/grupos/{id}/imagem", method = RequestMethod.GET)
+    public ResponseEntity<InputStreamResource> recuperarImagem(@PathVariable int id)
+            throws IOException {
+        Grupo grupo = grupoDAO.findById(id);
+        if (grupo.getImagem() == null) {
+                HttpHeaders respHeaders = new HttpHeaders();
+                respHeaders.setContentType(MediaType.valueOf("image/jpeg"));
+                InputStreamResource img =
+                new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semImagem.jpeg"))));
+            return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
+        }
+        HttpHeaders respHeaders = new HttpHeaders();
+        respHeaders.setContentType(MediaType.valueOf(grupo.getTipoImagem()));
+        InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(grupo.getImagem()));
+        return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
+    } 
 
 }
