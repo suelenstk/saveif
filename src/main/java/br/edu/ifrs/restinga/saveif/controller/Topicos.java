@@ -10,14 +10,11 @@ import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +36,11 @@ public class Topicos {
     @RequestMapping(path = "/topicos", method = RequestMethod.GET)
     public Iterable<Topico> listar() {
         return topicoDAO.findAll();
+    } 
+    
+    @RequestMapping(path = "/topicos/{id}", method = RequestMethod.GET)
+    public Topico listarTopicoEspecifico(@PathVariable int id) {
+        return topicoDAO.findById(id);
     } 
     
     @RequestMapping(path="/topicos/{idGrupo}", method = RequestMethod.POST)
@@ -74,5 +76,5 @@ public class Topicos {
          return topicoDAO.findTopico(id);                  // TESTE SQL nativo       
 //         return topicoDAO.findTopico(id, pageRequest);  // TESTE Spring Query
                 
-      }
+    }
 }
