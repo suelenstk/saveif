@@ -50,7 +50,7 @@ public interface PostDAO extends PagingAndSortingRepository<Post, Integer>{
     
     @Query( "SELECT post FROM  Grupo grupo JOIN grupo.topicos topico JOIN topico.posts post "
             + "WHERE grupo.id = :idgrupo AND topico.id = :idtopico ORDER BY post.id DESC")
-    public List<Post> findPorTopico(@Param("idgrupo") int idg, @Param("idtopico") int idt, Pageable pageable);
+    public Page<Post> findPorTopico(@Param("idgrupo") int idg, @Param("idtopico") int idt, Pageable pageable);
     
     
 }
