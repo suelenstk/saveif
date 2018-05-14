@@ -46,7 +46,7 @@ public class Grupos {
 
     @RequestMapping(path = "/grupos", method = RequestMethod.GET)
     public Iterable<Grupo> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
-        PageRequest pageRequest = new PageRequest(pagina, 20);
+        PageRequest pageRequest = new PageRequest(pagina, 10);
         return grupoDAO.findAll(pageRequest);
     }
 
@@ -103,7 +103,7 @@ public class Grupos {
     public Iterable<Grupo> pesquisaPorIntegrantes(@RequestParam(required = false, defaultValue = "0") int pagina,
             @PathVariable int id) throws Exception {
 
-        PageRequest pageRequest = new PageRequest(pagina, 20);
+        PageRequest pageRequest = new PageRequest(pagina, 10);
         
         
         Usuario igual = new Usuario();
