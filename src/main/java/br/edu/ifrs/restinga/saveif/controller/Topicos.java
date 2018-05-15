@@ -5,6 +5,7 @@
  */
 package br.edu.ifrs.restinga.saveif.controller;
 
+import br.edu.ifrs.restinga.saveif.aut.ForbiddenException;
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
@@ -46,7 +47,7 @@ public class Topicos {
     @RequestMapping(path="/topicos/{idGrupo}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Topico inserir(@RequestBody Topico topico, @AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo) throws Exception
-    {
+    {      
         if (topico.getNome().equalsIgnoreCase("Geral"))
             throw new Exception("Nome de tópico inválido");  
         topico.setId(0);
@@ -54,6 +55,8 @@ public class Topicos {
              
         Grupo grupoAtual = grupoDAO.findById(idGrupo);
         
+        if (grupoAtual.getDonoGrupo().getId()==usuarioAut.getUsuario().getId()){
+
         Topico topicoSalvo = topicoDAO.save(topico);
         
         List<Topico> topicos = new ArrayList<>();
@@ -65,6 +68,7 @@ public class Topicos {
         grupoDAO.save(grupoAtual);
         
         return topicoSalvo;
+        }else throw new ForbiddenException("Apenas o dono do grupo pode criar tópicos.");
     }
     
     
