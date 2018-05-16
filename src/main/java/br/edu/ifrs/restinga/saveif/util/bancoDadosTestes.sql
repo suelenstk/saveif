@@ -86,9 +86,9 @@ VALUES
 
 INSERT INTO `grupo` (`id`, `data_criacao`, `data_delecao`, `descricao`, `imagem`, `nome`, `tipo_imagem`, `tipo_privacidade`, `categoria_id`, `dono_grupo_id`) 
 VALUES 
-(1, '2018-04-15', NULL, 'Grupo para um sistema de controle de concessionária de veículos.', NULL, 'Programação II', NULL, 'aberto', '5', '2'),
-(2, '2018-04-15', NULL, 'Grupo ajuda em programação I.', NULL, 'Programação I', NULL, 'aberto', '5', '3'),
-(3, '2018-04-20', NULL, 'Grupo de Eletrônica.', NULL, 'Eletrônica Digital', NULL, 'aberto', '4', '4')
+(1, '2018-04-15', NULL, 'Grupo para um sistema de controle de concessionária de veículos.', NULL, 'Programação II', NULL, 'Aberto', '5', '2'),
+(2, '2018-04-15', NULL, 'Grupo ajuda em programação I.', NULL, 'Programação I', NULL, 'Aberto', '5', '3'),
+(3, '2018-04-20', NULL, 'Grupo de Eletrônica.', NULL, 'Eletrônica Digital', NULL, 'Aberto', '4', '4')
 
 ;
 
@@ -193,3 +193,4 @@ VALUES
 ('5', '7'),
 ('6', '8')
 ;
+
