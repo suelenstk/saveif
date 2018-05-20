@@ -40,6 +40,9 @@ public class Usuarios {
             permissao.add("usuario");
             usuario.setPermissoes(permissao);
         }
+        if (usuarioDAO.findByEmail(usuario.getEmail() + "@restinga.ifrs.edu.br") == null){
+            throw new Exception("E-mail já cadastrado no sistema. Por favor, tente novamente.");
+        }
         Usuario usuarioSalvo = usuarioDAO.save(usuario);
         return usuarioSalvo;
     }
@@ -141,6 +144,12 @@ public class Usuarios {
         igual.setId(id);
 
         return usuarioDAO.findByGruposIntegrados(igual, pageRequest);
+    }
+
+    @RequestMapping(path = "/usuarios/consultar", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public boolean consultarExistencia(@RequestParam(required = false) String email) {
+        return usuarioDAO.findByEmail(email + "@restinga.ifrs.edu.br") != null;
     }
 
 }
