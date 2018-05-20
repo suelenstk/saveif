@@ -47,7 +47,7 @@ public class Grupos {
     @RequestMapping(path = "/grupos", method = RequestMethod.GET)
     public Iterable<Grupo> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
         PageRequest pageRequest = new PageRequest(pagina, 10);
-        return grupoDAO.findAll(pageRequest);
+        return grupoDAO.findByOrderByIdDesc(pageRequest);
     }
 
     @RequestMapping(path = "/grupos/{id}/{idCategoria}", method = RequestMethod.PUT)
