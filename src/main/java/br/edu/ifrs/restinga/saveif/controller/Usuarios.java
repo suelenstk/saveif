@@ -32,16 +32,16 @@ public class Usuarios {
     @RequestMapping(path = "/usuarios", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario inserir(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestBody Usuario usuario) throws Exception {
+        if (usuarioDAO.findByEmail(usuario.getEmail()) != null)
+            throw new Exception("E-mail já cadastrado no sistema. Por favor, tente novamente.");
+        
         usuario.setId(0);
         usuario.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
-
+        
         if (usuarioAut == null || !usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
             ArrayList<String> permissao = new ArrayList<String>();
             permissao.add("usuario");
             usuario.setPermissoes(permissao);
-        }
-        if (usuarioDAO.findByEmail(usuario.getEmail() + "@restinga.ifrs.edu.br") == null){
-            throw new Exception("E-mail já cadastrado no sistema. Por favor, tente novamente.");
         }
         Usuario usuarioSalvo = usuarioDAO.save(usuario);
         return usuarioSalvo;
