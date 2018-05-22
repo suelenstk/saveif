@@ -94,11 +94,22 @@ public class Usuarios {
     }
 
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.PUT)
-    @ResponseStatus(HttpStatus.OK)
     public void atualizar(@PathVariable int id, @RequestBody Usuario usuario) throws Exception {
+        
         if (usuarioDAO.existsById(id)) {
+           
             usuario.setId(id);
-            usuarioDAO.save(usuario);
+            Optional<Usuario> findById = usuarioDAO.findById(id);
+            Usuario alt = findById.get();
+            
+            alt.setNome(usuario.getNome());
+            alt.setTipoVinculo(usuario.getTipoVinculo());
+            alt.setCurso(usuario.getCurso());
+            alt.setSobreUsuario(usuario.getSobreUsuario());
+            
+            usuarioDAO.save(alt);
+            
+            
         }
     }
 
