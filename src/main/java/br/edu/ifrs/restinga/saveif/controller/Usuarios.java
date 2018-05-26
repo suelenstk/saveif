@@ -7,6 +7,8 @@ import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -18,10 +20,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(path = "/api")
