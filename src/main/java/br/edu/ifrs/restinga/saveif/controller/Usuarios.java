@@ -161,6 +161,46 @@ public class Usuarios {
     @ResponseStatus(HttpStatus.OK)
     public boolean consultarExistencia(@RequestParam(required = false) String email) {
         return usuarioDAO.findByEmail(email + "@restinga.ifrs.edu.br") != null;
-    }
+    }   
+    
+    
+     @RequestMapping(path = "/usuarios/{id}/imagem", method = RequestMethod.POST)
+     public ResponseEntity<InputStreamResource>  inserirImagem(@PathVariable int id,
+                           @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
+       
+       Optional<Usuario> findById = usuarioDAO.findById(id);
+       Usuario alt = findById.get();
+
+       try {
+           alt.setTipoImagem(uploadfiles.getContentType());
+           alt.setImagem(uploadfiles.getBytes());
+           usuarioDAO.save(alt);
+           return recuperarImagem(id);
+
+       } catch (IOException ex) {
+           
+           ex.printStackTrace();
+           throw new Exception("Erro ao salvar arquivo de imagem");
+       }
+   }
+
+   @RequestMapping(value = "/usuarios/{id}/imagem", method = RequestMethod.GET)
+   public ResponseEntity<InputStreamResource> recuperarImagem(@PathVariable int id)
+           throws IOException {
+       Optional<Usuario> findById = usuarioDAO.findById(id);
+       Usuario usuario = findById.get();
+       
+       if (usuario.getImagem() == null) {
+               HttpHeaders respHeaders = new HttpHeaders();
+               respHeaders.setContentType(MediaType.valueOf("image/jpeg"));
+               InputStreamResource img =
+               new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semImagem.jpeg"))));
+           return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
+       }
+       HttpHeaders respHeaders = new HttpHeaders();
+       respHeaders.setContentType(MediaType.valueOf(usuario.getTipoImagem()));
+       InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(usuario.getImagem()));
+       return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
+   }
 
 }
