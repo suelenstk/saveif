@@ -19,5 +19,5 @@ public interface UsuarioDAO extends PagingAndSortingRepository<Usuario, Integer>
     Page<Usuario> findByGruposIntegrados(Grupo integrantes, Pageable pageable);
 
     public Usuario findByEmail(String email);
-
+    
 }

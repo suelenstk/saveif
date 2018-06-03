@@ -3,9 +3,12 @@ package br.edu.ifrs.restinga.saveif.controller;
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
 import br.edu.ifrs.restinga.saveif.dao.CategoriaDAO;
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
+import br.edu.ifrs.restinga.saveif.dao.NotificacaoDAO;
 import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
+import br.edu.ifrs.restinga.saveif.dao.UsuarioDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Categoria;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
+import br.edu.ifrs.restinga.saveif.modelo.Notificacao;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import java.util.ArrayList;
@@ -25,11 +28,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -43,6 +47,12 @@ public class Grupos {
 
     @Autowired
     CategoriaDAO categoriaDAO;
+    
+    @Autowired
+    UsuarioDAO usuarioDAO;
+    
+    @Autowired
+    NotificacaoDAO notificacaoDAO;
 
     @RequestMapping(path = "/grupos", method = RequestMethod.GET)
     public Iterable<Grupo> listar(@RequestParam(required = false, defaultValue = "0") int pagina) {
@@ -73,25 +83,35 @@ public class Grupos {
     @ResponseStatus(HttpStatus.CREATED)
     public void solicitarInscricao(@PathVariable int id, @PathVariable int idUsuario) {
 
-        List<Usuario> solicitacoes;
-        List<Usuario> integrantes;
-
-        if (grupoDAO.existsById(id)) {
+        Optional<Usuario> findById = usuarioDAO.findById(idUsuario);
+        
+        if (grupoDAO.existsById(id) && findById.isPresent()) {
             
-            Grupo busca = grupoDAO.findById(id);
+            Grupo busca = grupoDAO.findById(id);            
+                        
+            Usuario solicitante = findById.get();      
 
-            solicitacoes = busca.getSolicitantesGrupo();
+            if (busca.getTipoPrivacidade().equalsIgnoreCase("aberto")){  
+                List<Usuario> integrantes  = busca.getIntegrantesGrupo();
+                integrantes.add(solicitante);
+                busca.setIntegrantesGrupo(integrantes);
+                
+            } else {               
+                List<Usuario> solicitacoes = busca.getSolicitantesGrupo();
+                solicitacoes.add(solicitante);
+                busca.setSolicitantesGrupo(solicitacoes);
+                
+                Notificacao notificacao = new Notificacao(0, " recebeu solicitação de participação de ", 
+                    "/usuarios/" + solicitante.getId(), solicitante.getNome(),  "solicitacao");
+                
+                notificacao = notificacaoDAO.save(notificacao);
+                
 
-            integrantes = busca.getIntegrantesGrupo();
-
-            Usuario solicitante = new Usuario(idUsuario);
-
-            solicitacoes.add(solicitante);
-            integrantes.add(solicitante);
-
-            busca.setIntegrantesGrupo(integrantes);
-            busca.setSolicitantesGrupo(solicitacoes);
-
+                List<Notificacao> notificacoes = busca.getNotificacoes();
+                notificacoes.add(notificacao);
+                
+            }
+           
             grupoDAO.save(busca);
             
         }

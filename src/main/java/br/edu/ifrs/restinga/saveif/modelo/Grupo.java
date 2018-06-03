@@ -47,7 +47,7 @@ public class Grupo implements Serializable {
     private Date dataDelecao;
 
     @ManyToOne
-    //@JoinColumn(nullable = false)    //Temporariamente o valor podera ser nulo
+    @JoinColumn(nullable = false)
     private Categoria categoria;
 
     @JsonIgnore
@@ -76,6 +76,18 @@ public class Grupo implements Serializable {
     @ManyToMany
     private List<Usuario> convitesGrupo;
 
+    @JsonIgnore
+    @OneToMany
+    private List<Notificacao> notificacoes;
+    
+    public Grupo() {
+        atividades = new ArrayList<>();
+        topicos = new ArrayList<>();
+        coordenadoresGrupo = new ArrayList<>();
+        integrantesGrupo = new ArrayList<>();
+        solicitantesGrupo = new ArrayList<>();
+        convitesGrupo = new ArrayList<>();
+    }
 
     public int getId() {
         return id;
@@ -140,14 +152,9 @@ public class Grupo implements Serializable {
     public List<Usuario> getConvitesGrupo() {
         return convitesGrupo;
     }
-
-    public Grupo() {
-        atividades = new ArrayList<>();
-        topicos = new ArrayList<>();
-        coordenadoresGrupo = new ArrayList<>();
-        integrantesGrupo = new ArrayList<>();
-        solicitantesGrupo = new ArrayList<>();
-        convitesGrupo = new ArrayList<>();
+    
+    public List<Notificacao> getNotificacoes() {
+        return notificacoes;
     }
 
     public void setId(int id) {
@@ -225,5 +232,8 @@ public class Grupo implements Serializable {
         this.convitesGrupo = convitesGrupo;
     }
 
+    public void setNotificacoes(List<Notificacao> notificacoes) {
+        this.notificacoes = notificacoes;
+    }
 
 }
