@@ -201,7 +201,7 @@ public class Usuarios {
                HttpHeaders respHeaders = new HttpHeaders();
                respHeaders.setContentType(MediaType.valueOf("image/jpeg"));
                InputStreamResource img =
-               new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semImagem.jpeg"))));
+               new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semFoto.png"))));
            return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
        }
        HttpHeaders respHeaders = new HttpHeaders();
