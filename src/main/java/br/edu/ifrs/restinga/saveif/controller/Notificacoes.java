@@ -44,4 +44,12 @@ public class Notificacoes {
                 
     }
     
+    @RequestMapping(path = "/notificacoes/{id}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    public void apagar(@PathVariable int id) {
+        if (notificacaoDAO.existsById(id)) {
+            notificacaoDAO.deleteById(id);
+        }
+    }
+    
 }

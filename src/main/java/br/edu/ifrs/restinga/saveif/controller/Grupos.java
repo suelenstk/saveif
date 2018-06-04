@@ -110,6 +110,11 @@ public class Grupos {
                 List<Notificacao> notificacoes = busca.getNotificacoes();
                 notificacoes.add(notificacao);
                 
+                Usuario donoGrupo = busca.getDonoGrupo();           // TESTE 
+                List<Notificacao> notificacoesDono = donoGrupo.getNotificacoes();   // TESTE
+                notificacoesDono.add(notificacao);  // TESTE
+                usuarioDAO.save(donoGrupo); // TESTE
+                
             }
            
             grupoDAO.save(busca);
