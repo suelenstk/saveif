@@ -72,7 +72,8 @@ public class Usuario implements Serializable {
     private List<Categoria> categorias;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "usuario_notificacoes")
     private List<Notificacao> notificacoes;
 
     @JsonIgnore

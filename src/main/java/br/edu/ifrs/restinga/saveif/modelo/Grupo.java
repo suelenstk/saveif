@@ -77,9 +77,10 @@ public class Grupo implements Serializable {
     private List<Usuario> convitesGrupo;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "grupo_notificacoes")
     private List<Notificacao> notificacoes;
-    
+
     public Grupo() {
         atividades = new ArrayList<>();
         topicos = new ArrayList<>();
