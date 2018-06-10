@@ -62,13 +62,18 @@ public class Grupos {
 
     @RequestMapping(path = "/grupos/{id}/{idCategoria}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void atualizar(@PathVariable int id, @RequestBody Grupo grupo, @PathVariable int idCategoria) {
-        if (grupoDAO.existsById(id)) {
+    public void atualizar(@RequestBody Grupo grupo, @PathVariable int id,  @PathVariable int idCategoria) {    
+        if (grupoDAO.existsById(id)){
             grupo.setId(id);
-            Categoria categoria = categoriaDAO.findById(idCategoria);
+            
+            Grupo grupoEditado = grupoDAO.findById(id);
+            grupoEditado.setNome(grupo.getNome());
+            grupoEditado.setDescricao(grupo.getDescricao());
+            grupoEditado.setCategoria(categoriaDAO.findById(idCategoria));
+            grupoEditado.setTipoPrivacidade(grupo.getTipoPrivacidade());
+          
 
-            grupo.setCategoria(categoria);
-            grupoDAO.save(grupo);
+            grupoDAO.save(grupoEditado);
         }
     }
 
