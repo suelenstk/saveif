@@ -196,10 +196,18 @@ public class Usuarios {
         Usuario alt = findById.get();
 
         try {
-            alt.setTipoImagem(uploadfiles.getContentType());
-            alt.setImagem(uploadfiles.getBytes());
-            usuarioDAO.save(alt);
-            return recuperarImagem(id);
+            
+            if(!uploadfiles.getContentType().equals("application/octet-stream")){
+                System.out.println(uploadfiles.getContentType());
+                alt.setTipoImagem(uploadfiles.getContentType());
+                alt.setImagem(uploadfiles.getBytes());
+                usuarioDAO.save(alt);
+                
+                return recuperarImagem(id);
+                
+            }else{
+                return recuperarImagem(id);
+            }
 
         } catch (IOException ex) {
 
