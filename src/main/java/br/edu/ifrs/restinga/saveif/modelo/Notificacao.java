@@ -1,6 +1,7 @@
 package br.edu.ifrs.restinga.saveif.modelo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -12,24 +13,30 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Notificacao implements Serializable{
+public class Notificacao implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id; 
-    
+    private int id;
+
     @Column(nullable = false)
     private String descricao;
-    
+
     @Column(nullable = false, length = 80)
-    private String link;
-    
+    private String linkUsuario;
+
     @Column(nullable = false, length = 60)
-    private String textoLink;
-    
+    private String textoUsuario;
+
+    @Column(nullable = false, length = 80)
+    private String linkGrupo;
+
+    @Column(nullable = false, length = 60)
+    private String textoGrupo;
+
     @Column(nullable = false, length = 20)
     private String tipo;
-     
+
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
@@ -38,53 +45,76 @@ public class Notificacao implements Serializable{
     public Notificacao() {
     }
 
-    public Notificacao(int id, String descricao, String link, String textoLink, String tipo) {
-        this.id = id;
+    public Notificacao(String descricao, String linkUsuario, String textoUsuario, String linkGrupo, String textoGrupo, String tipo) {
         this.descricao = descricao;
-        this.link = link;
-        this.textoLink = textoLink;
+        this.linkUsuario = linkUsuario;
+        this.textoUsuario = textoUsuario;
+        this.linkGrupo = linkGrupo;
+        this.textoGrupo = textoGrupo;
         this.tipo = tipo;
     }
-    
+
     public int getId() {
         return id;
     }
+
     public String getDescricao() {
         return descricao;
     }
-    public String getLink() {
-        return link;
+
+    public String getLinkUsuario() {
+        return linkUsuario;
     }
+
     public Date getDataNotificacao() {
         return dataNotificacao;
-    }    
-    public String getTextoLink() {
-        return textoLink;
     }
+
+    public String getTextoUsuario() {
+        return textoUsuario;
+    }
+
     public String getTipo() {
         return tipo;
     }
-    
+
+    public String getLinkGrupo() {
+        return linkGrupo;
+    }
+
+    public String getTextoGrupo() {
+        return textoGrupo;
+    }
 
     public void setId(int id) {
         this.id = id;
     }
+
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
     public void setDataNotificacao(Date dataNotificacao) {
         this.dataNotificacao = dataNotificacao;
     }
-    public void setLink(String link) {
-        this.link = link;
+
+    public void setLinkUsuario(String linkUsuario) {
+        this.linkUsuario = linkUsuario;
     }
-    public void setTextoLink(String textoLink) {
-        this.textoLink = textoLink;
+
+    public void setTextoUsuario(String textoUsuario) {
+        this.textoUsuario = textoUsuario;
     }
+
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
+    public void setLinkGrupo(String linkGrupo) {
+        this.linkGrupo = linkGrupo;
+    }
 
-      
+    public void setTextoGrupo(String textoGrupo) {
+        this.textoGrupo = textoGrupo;
+    }
 }

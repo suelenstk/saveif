@@ -16,34 +16,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api")
 public class Notificacoes {
-    
-    
+
     @Autowired
     NotificacaoDAO notificacaoDAO;
-    
+
     @Autowired
     GrupoDAO grupoDAO;
-        
-    
+
     @RequestMapping(path = "/grupos/{id}/notificacoes", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Notificacao>pesquisaNotificacoesGrupo(@RequestParam(required = false, defaultValue = "0") int pagina,@PathVariable int id) throws Exception{
-         PageRequest pageRequest = new PageRequest(pagina, 20);
-         
-         return notificacaoDAO.findNotificacaoGrupo(id, pageRequest);  
-                
+    public Iterable<Notificacao> pesquisaNotificacoesGrupo(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
+        PageRequest pageRequest = new PageRequest(pagina, 20);
+
+        return notificacaoDAO.findNotificacaoGrupo(id, pageRequest);
     }
-    
-    
+
+
     @RequestMapping(path = "/usuarios/{id}/notificacoes", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Notificacao>pesquisaNotificacoesUsuario(@RequestParam(required = false, defaultValue = "0") int pagina,@PathVariable int id) throws Exception{
-         PageRequest pageRequest = new PageRequest(pagina, 20);
-         
-         return notificacaoDAO.findNotificacaoUsuario(id, pageRequest);  
-                
+    public Iterable<Notificacao> pesquisaNotificacoesUsuario(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
+        PageRequest pageRequest = new PageRequest(pagina, 20);
+
+        return notificacaoDAO.findNotificacaoUsuario(id, pageRequest);
+
     }
-    
+
     @RequestMapping(path = "/notificacoes/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
     public void apagar(@PathVariable int id) {
@@ -51,5 +48,5 @@ public class Notificacoes {
             notificacaoDAO.deleteById(id);
         }
     }
-    
+
 }

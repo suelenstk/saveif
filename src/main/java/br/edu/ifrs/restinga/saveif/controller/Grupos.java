@@ -106,11 +106,10 @@ public class Grupos {
                 solicitacoes.add(solicitante);
                 busca.setSolicitantesGrupo(solicitacoes);
                 
-                Notificacao notificacao = new Notificacao(0, " recebeu solicitação de participação de ", 
-                    "/usuarios/" + solicitante.getId(), solicitante.getNome(),  "solicitacao");
+                Notificacao notificacao = new Notificacao(" solicitou participação no grupo ",
+                    "/#/usuarios/" + solicitante.getId(), solicitante.getNome(), "/#/MyGroups/" + busca.getId() + "/geral", busca.getNome(), "solicitacao");
                 
                 notificacao = notificacaoDAO.save(notificacao);
-                
 
                 List<Notificacao> notificacoes = busca.getNotificacoes();
                 notificacoes.add(notificacao);

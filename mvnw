@@ -73,17 +73,17 @@ if [ -z "$JAVA_HOME" ] ; then
 fi
 
 if [ -z "$M2_HOME" ] ; then
-  ## resolve links - $0 may be a link to maven's home
+  ## resolve links - $0 may be a linkUsuario to maven's home
   PRG="$0"
 
   # need this for relative symlinks
   while [ -h "$PRG" ] ; do
     ls=`ls -ld "$PRG"`
-    link=`expr "$ls" : '.*-> \(.*\)$'`
-    if expr "$link" : '/.*' > /dev/null; then
-      PRG="$link"
+    linkUsuario=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$linkUsuario" : '/.*' > /dev/null; then
+      PRG="$linkUsuario"
     else
-      PRG="`dirname "$PRG"`/$link"
+      PRG="`dirname "$PRG"`/$linkUsuario"
     fi
   done
 
