@@ -213,9 +213,11 @@ public class Usuarios {
                 usuarioDAO.save(alt);
 
                 return recuperarImagem(id);
+                
 
             } else {
                 return recuperarImagem(id);
+                
             }
             
 
