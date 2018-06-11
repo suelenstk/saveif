@@ -2,6 +2,8 @@ package br.edu.ifrs.restinga.saveif.controller;
 
 import br.edu.ifrs.restinga.saveif.aut.ForbiddenException;
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
+import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
+import br.edu.ifrs.restinga.saveif.dao.NotificacaoDAO;
 import br.edu.ifrs.restinga.saveif.dao.UsuarioDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
@@ -27,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.core.io.InputStreamResource;
@@ -59,7 +62,13 @@ public class Usuarios {
 
     @Autowired
     UsuarioDAO usuarioDAO;
-
+    
+    @Autowired
+    GrupoDAO grupoDAO;
+    
+    @Autowired
+    NotificacaoDAO notificacaoDAO;
+    
     @RequestMapping(path = "/usuarios/listar", method = RequestMethod.GET)
     public Iterable<Usuario> listarSemPaginacao(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestParam(required = false) String nome) {
         if (nome != null && !nome.isEmpty()) {
@@ -196,18 +205,10 @@ public class Usuarios {
         Usuario alt = findById.get();
 
         try {
-            
-            if(!uploadfiles.getContentType().equals("application/octet-stream")){
-                System.out.println(uploadfiles.getContentType());
-                alt.setTipoImagem(uploadfiles.getContentType());
-                alt.setImagem(uploadfiles.getBytes());
-                usuarioDAO.save(alt);
-                
-                return recuperarImagem(id);
-                
-            }else{
-                return recuperarImagem(id);
-            }
+            alt.setTipoImagem(uploadfiles.getContentType());
+            alt.setImagem(uploadfiles.getBytes());
+            usuarioDAO.save(alt);
+            return recuperarImagem(id);
 
         } catch (IOException ex) {
 
@@ -234,5 +235,97 @@ public class Usuarios {
         InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(usuario.getImagem()));
         return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
     }
+    
+    
+    
+    @RequestMapping(path = "/usuarios/{idUsuario}/convite/{idGrupo}/aceite/{idNotificacao}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public void aceitarConvite(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idUsuario, @PathVariable int idGrupo, @PathVariable(required = false) Integer idNotificacao ) throws Exception {
+
+        Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
+        
+        if ( usuarioAut.getUsuario().getPermissoes().contains("administrador")
+            || logado.getId() == idUsuario ) {   
+        
+            Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);        
+
+            if (grupoDAO.existsById(idGrupo) && usuarioFind.isPresent()) {
+                
+                if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
+                    notificacaoDAO.deleteById(idNotificacao); 
+
+                Grupo grupo = grupoDAO.findById(idGrupo);   
+                Usuario convidado = usuarioFind.get(); 
+
+                List<Grupo> convitesUsuario = convidado.getGruposConvidado();  
+
+                if (convitesUsuario.contains(grupo)){
+                    List<Usuario> integrantes  = grupo.getIntegrantesGrupo();
+                    integrantes.add(convidado);
+                    grupo.setIntegrantesGrupo(integrantes);                       
+                             
+                    List<Usuario> convitesGrupo = grupo.getConvitesGrupo();
+                    convitesGrupo.remove(convidado);
+                    grupo.setConvitesGrupo(convitesGrupo);
+                            
+                    grupoDAO.save(grupo); 
+      
+                } else
+                    throw new ForbiddenException("Usuário não possui convite para grupo.");           
+
+            } else
+                throw new Exception("Usuário ou grupo não encontrado.");
+            
+            
+        } else
+            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá aceitar participação em grupos.");
+        
+           
+    }   
+    
+    
+    @RequestMapping(path = "/usuarios/{idUsuario}/convite/{idGrupo}/negacao/{idNotificacao}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public void negarConvite(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idUsuario, @PathVariable int idGrupo, @PathVariable(required = false) Integer idNotificacao ) throws Exception {
+
+        Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
+        
+        if ( usuarioAut.getUsuario().getPermissoes().contains("administrador")
+            || logado.getId() == idUsuario ) {   
+        
+            Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);        
+
+            if (grupoDAO.existsById(idGrupo) && usuarioFind.isPresent()) {
+                
+                if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
+                    notificacaoDAO.deleteById(idNotificacao); 
+
+                Grupo grupo = grupoDAO.findById(idGrupo);   
+                Usuario convidado = usuarioFind.get(); 
+
+                List<Grupo> convitesUsuario = convidado.getGruposConvidado();  
+
+                if (convitesUsuario.contains(grupo)){                  
+                             
+                    List<Usuario> convitesGrupo = grupo.getConvitesGrupo();
+                    convitesGrupo.remove(convidado);
+                    grupo.setConvitesGrupo(convitesGrupo);
+                            
+                    grupoDAO.save(grupo); 
+      
+                } else
+                    throw new ForbiddenException("Usuário não possui convite para grupo.");           
+
+            } else
+                throw new Exception("Usuário ou grupo não encontrado.");
+            
+            
+        } else
+            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá negar participação em grupos.");
+        
+           
+    }
+    
+    
 
 }
