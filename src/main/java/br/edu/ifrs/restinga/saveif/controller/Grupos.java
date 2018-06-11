@@ -181,7 +181,7 @@ public class Grupos {
     }
  
     
-    @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/negacao{idNotificacao}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/negacao/{idNotificacao}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public void negarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario , @PathVariable(required = false) Integer idNotificacao) {
         
