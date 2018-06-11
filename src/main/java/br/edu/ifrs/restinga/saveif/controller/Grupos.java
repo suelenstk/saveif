@@ -134,16 +134,20 @@ public class Grupos {
     }
 
 
-    @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/aceite", method = RequestMethod.PUT)
+    @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/aceite/{idNotificacao}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void aceitarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario) {
+    public void aceitarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario , @PathVariable(required = false) Integer idNotificacao) {
+        
+        if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
+            notificacaoDAO.deleteById(idNotificacao);         
         
         Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);
+        Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
 
         if ( grupoDAO.existsById(idGrupo) && usuarioFind.isPresent() ) {
             Grupo grupo = grupoDAO.findById(idGrupo);  
 
-            if ( grupo.getCoordenadoresGrupo().contains(usuarioAut.getUsuario())   
+            if ( grupo.getCoordenadoresGrupo().contains(logado)   
                 || usuarioAut.getUsuario().getPermissoes().contains("administrador") ) {
                 
                         Usuario usuario = usuarioFind.get();
@@ -177,16 +181,20 @@ public class Grupos {
     }
  
     
-    @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/negacao", method = RequestMethod.PUT)
+    @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/negacao{idNotificacao}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void negarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario) {
+    public void negarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario , @PathVariable(required = false) Integer idNotificacao) {
+        
+        if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
+            notificacaoDAO.deleteById(idNotificacao);         
         
         Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);
+        Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
 
         if ( grupoDAO.existsById(idGrupo) && usuarioFind.isPresent() ) {
             Grupo grupo = grupoDAO.findById(idGrupo);  
 
-            if ( grupo.getCoordenadoresGrupo().contains(usuarioAut.getUsuario())   
+            if ( grupo.getCoordenadoresGrupo().contains(logado)   
                 || usuarioAut.getUsuario().getPermissoes().contains("administrador") ) {
                 
                         Usuario usuario = usuarioFind.get();                        
@@ -213,8 +221,8 @@ public class Grupos {
             throw new ForbiddenException("Usuário ou grupo não encontrado."); 
         
     }   
-        
     
+        
     @RequestMapping(path = "/grupos/integrantes/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Grupo> pesquisaPorIntegrantes(@RequestParam(required = false, defaultValue = "0") int pagina,
