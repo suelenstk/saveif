@@ -107,7 +107,7 @@ public class Grupos {
                     grupo.setSolicitantesGrupo(solicitacoes);
 
                     Notificacao notificacao = new Notificacao(" solicitou participação no grupo ",
-                    "/#/usuarios/" + solicitante.getId(), solicitante.getNome(), Integer.toString(grupo.getId()), grupo.getNome(), "solicitacao");
+                    Integer.toString(solicitante.getId()), solicitante.getNome(), Integer.toString(grupo.getId()), grupo.getNome(), "solicitacao");
 
                     notificacao = notificacaoDAO.save(notificacao);
 
