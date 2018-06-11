@@ -45,8 +45,9 @@ public class Usuarios {
     @RequestMapping(path = "/usuarios", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario inserir(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestBody Usuario usuario) throws Exception {
-        if (usuarioDAO.findByEmail(usuario.getEmail()) != null)
+        if (usuarioDAO.findByEmail(usuario.getEmail()) != null) {
             throw new Exception("E-mail já cadastrado no sistema. Por favor, tente novamente.");
+        }
 
         usuario.setId(0);
         usuario.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
@@ -62,13 +63,13 @@ public class Usuarios {
 
     @Autowired
     UsuarioDAO usuarioDAO;
-    
+
     @Autowired
     GrupoDAO grupoDAO;
-    
+
     @Autowired
     NotificacaoDAO notificacaoDAO;
-    
+
     @RequestMapping(path = "/usuarios/listar", method = RequestMethod.GET)
     public Iterable<Usuario> listarSemPaginacao(@AuthenticationPrincipal UsuarioAut usuarioAut, @RequestParam(required = false) String nome) {
         if (nome != null && !nome.isEmpty()) {
@@ -128,7 +129,6 @@ public class Usuarios {
 
             usuarioDAO.save(alt);
 
-
         }
     }
 
@@ -154,8 +154,8 @@ public class Usuarios {
 
         String token = JWT.create()
                 .withClaim("id", usuarioAut.getUsuario().getId()).
-//                withExpiresAt(expira).
-        sign(algorithm);
+                //                withExpiresAt(expira).
+                sign(algorithm);
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.set("token", token);
 
@@ -180,7 +180,7 @@ public class Usuarios {
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Usuario> listarParticipantes(@RequestParam(required = false,
             defaultValue = "0") int pagina,
-                                                 @PathVariable int id) throws Exception {
+            @PathVariable int id) throws Exception {
 
         PageRequest pageRequest = new PageRequest(pagina, 5);
 
@@ -196,19 +196,28 @@ public class Usuarios {
         return usuarioDAO.findByEmail(email + "@restinga.ifrs.edu.br") != null;
     }
 
-
     @RequestMapping(path = "/usuarios/{id}/imagem", method = RequestMethod.POST)
     public ResponseEntity<InputStreamResource> inserirImagem(@PathVariable int id,
-                                                             @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
+            @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
 
         Optional<Usuario> findById = usuarioDAO.findById(id);
         Usuario alt = findById.get();
 
         try {
-            alt.setTipoImagem(uploadfiles.getContentType());
-            alt.setImagem(uploadfiles.getBytes());
-            usuarioDAO.save(alt);
-            return recuperarImagem(id);
+            
+            if (!uploadfiles.getContentType().equals("application/octet-stream")) {
+                
+                System.out.println(uploadfiles.getContentType());
+                alt.setTipoImagem(uploadfiles.getContentType());
+                alt.setImagem(uploadfiles.getBytes());
+                usuarioDAO.save(alt);
+
+                return recuperarImagem(id);
+
+            } else {
+                return recuperarImagem(id);
+            }
+            
 
         } catch (IOException ex) {
 
@@ -226,8 +235,8 @@ public class Usuarios {
         if (usuario.getImagem() == null) {
             HttpHeaders respHeaders = new HttpHeaders();
             respHeaders.setContentType(MediaType.valueOf("image/jpeg"));
-            InputStreamResource img =
-                    new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semFoto.png"))));
+            InputStreamResource img
+                    = new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semFoto.png"))));
             return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
         }
         HttpHeaders respHeaders = new HttpHeaders();
@@ -235,110 +244,112 @@ public class Usuarios {
         InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(usuario.getImagem()));
         return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
     }
-    
-    
-    
+
     @RequestMapping(path = "/usuarios/{idUsuario}/convite/{idGrupo}/aceite/{idNotificacao}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void aceitarConvite(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idUsuario, @PathVariable int idGrupo, @PathVariable(required = false) Integer idNotificacao ) throws Exception {
+    public void aceitarConvite(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idUsuario, @PathVariable int idGrupo, @PathVariable(required = false) Integer idNotificacao) throws Exception {
 
         Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
-        
-        if ( usuarioAut.getUsuario().getPermissoes().contains("administrador")
-            || logado.getId() == idUsuario ) {   
-        
-            Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);        
+
+        if (usuarioAut.getUsuario().getPermissoes().contains("administrador")
+                || logado.getId() == idUsuario) {
+
+            Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);
 
             if (grupoDAO.existsById(idGrupo) && usuarioFind.isPresent()) {
-                
-                if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
-                    notificacaoDAO.deleteById(idNotificacao); 
 
-                Grupo grupo = grupoDAO.findById(idGrupo);   
-                Usuario convidado = usuarioFind.get(); 
+                if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao)) {
+                    notificacaoDAO.deleteById(idNotificacao);
+                }
 
-                List<Grupo> convitesUsuario = convidado.getGruposConvidado();  
+                Grupo grupo = grupoDAO.findById(idGrupo);
+                Usuario convidado = usuarioFind.get();
 
-                if (convitesUsuario.contains(grupo)){
-                    List<Usuario> integrantes  = grupo.getIntegrantesGrupo();
+                List<Grupo> convitesUsuario = convidado.getGruposConvidado();
+
+                if (convitesUsuario.contains(grupo)) {
+                    List<Usuario> integrantes = grupo.getIntegrantesGrupo();
                     integrantes.add(convidado);
-                    grupo.setIntegrantesGrupo(integrantes);                       
-                             
+                    grupo.setIntegrantesGrupo(integrantes);
+
                     List<Usuario> convitesGrupo = grupo.getConvitesGrupo();
                     convitesGrupo.remove(convidado);
                     grupo.setConvitesGrupo(convitesGrupo);
-                            
-                    grupoDAO.save(grupo); 
-      
-                } else
-                    throw new ForbiddenException("Usuário não possui convite para grupo.");           
 
-            } else
+                    grupoDAO.save(grupo);
+
+                } else {
+                    throw new ForbiddenException("Usuário não possui convite para grupo.");
+                }
+
+            } else {
                 throw new Exception("Usuário ou grupo não encontrado.");
-            
-            
-        } else
+            }
+
+        } else {
             throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá aceitar participação em grupos.");
-        
-           
-    }   
-    
-    
+        }
+
+    }
+
     @RequestMapping(path = "/usuarios/{idUsuario}/convite/{idGrupo}/negacao/{idNotificacao}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void negarConvite(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idUsuario, @PathVariable int idGrupo, @PathVariable(required = false) Integer idNotificacao ) throws Exception {
+    public void negarConvite(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idUsuario, @PathVariable int idGrupo, @PathVariable(required = false) Integer idNotificacao) throws Exception {
 
         Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
-        
-        if ( usuarioAut.getUsuario().getPermissoes().contains("administrador")
-            || logado.getId() == idUsuario ) {   
-        
-            Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);        
+
+        if (usuarioAut.getUsuario().getPermissoes().contains("administrador")
+                || logado.getId() == idUsuario) {
+
+            Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);
 
             if (grupoDAO.existsById(idGrupo) && usuarioFind.isPresent()) {
-                
-                if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
-                    notificacaoDAO.deleteById(idNotificacao); 
 
-                Grupo grupo = grupoDAO.findById(idGrupo);   
-                Usuario convidado = usuarioFind.get(); 
+                if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao)) {
+                    notificacaoDAO.deleteById(idNotificacao);
+                }
 
-                List<Grupo> convitesUsuario = convidado.getGruposConvidado();  
+                Grupo grupo = grupoDAO.findById(idGrupo);
+                Usuario convidado = usuarioFind.get();
 
-                if (convitesUsuario.contains(grupo)){                  
-                             
+                List<Grupo> convitesUsuario = convidado.getGruposConvidado();
+
+                if (convitesUsuario.contains(grupo)) {
+
                     List<Usuario> convitesGrupo = grupo.getConvitesGrupo();
                     convitesGrupo.remove(convidado);
                     grupo.setConvitesGrupo(convitesGrupo);
-                            
-                    grupoDAO.save(grupo); 
-      
-                } else
-                    throw new ForbiddenException("Usuário não possui convite para grupo.");           
 
-            } else
+                    grupoDAO.save(grupo);
+
+                } else {
+                    throw new ForbiddenException("Usuário não possui convite para grupo.");
+                }
+
+            } else {
                 throw new Exception("Usuário ou grupo não encontrado.");
-            
-            
-        } else
-            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá negar participação em grupos.");     
+            }
+
+        } else {
+            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá negar participação em grupos.");
+        }
     }
-    
+
     @RequestMapping(path = "/usuarios/{idUsuario}/grupos/{idGrupo}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void solicitarParticipacao(@PathVariable int idUsuario, @PathVariable int idGrupo) {
-        Grupo solicitante = grupoDAO.findById (idGrupo);   
-        Optional<Usuario> usuarioConvidado = usuarioDAO.findById(idUsuario);   
-        
+        Grupo solicitante = grupoDAO.findById(idGrupo);
+        Optional<Usuario> usuarioConvidado = usuarioDAO.findById(idUsuario);
+
         List<Grupo> gruposSolicitacoes = usuarioConvidado.get().getGruposConvidado();
         gruposSolicitacoes.add(solicitante);
         usuarioConvidado.get().setGruposConvidado(gruposSolicitacoes);
-        
+
         List<Usuario> usuariosConvidados = solicitante.getConvitesGrupo();
         usuariosConvidados.add(usuarioConvidado.get());
         solicitante.setConvitesGrupo(usuariosConvidados);
-        
+
         usuarioDAO.save(usuarioConvidado.get());
-        grupoDAO.save (solicitante);
+        grupoDAO.save(solicitante);
     }
 }
