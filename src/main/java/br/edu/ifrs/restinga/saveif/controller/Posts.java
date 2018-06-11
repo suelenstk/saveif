@@ -8,12 +8,16 @@ package br.edu.ifrs.restinga.saveif.controller;
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
 import br.edu.ifrs.restinga.saveif.dao.AnexoDAO;
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
+import br.edu.ifrs.restinga.saveif.dao.NotificacaoDAO;
 import br.edu.ifrs.restinga.saveif.dao.PostDAO;
 import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
+import br.edu.ifrs.restinga.saveif.dao.UsuarioDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Anexo;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
+import br.edu.ifrs.restinga.saveif.modelo.Notificacao;
 import br.edu.ifrs.restinga.saveif.modelo.Post;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
+import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +52,15 @@ public class Posts {
     
     @Autowired
     AnexoDAO anexoDAO;
-
+    
+     // TESTES DE NOTIFICACAO {        
+    @Autowired
+    NotificacaoDAO notificacaoDAO;
+    
+    @Autowired
+    UsuarioDAO usuarioDAO;
+    // } TESTES DE NOTIFICACAO
+    
     @RequestMapping(path = "/grupos/{id}/geral", method = RequestMethod.GET)
     public Iterable<Post> listarGeral(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) {
         PageRequest pageRequest = new PageRequest(pagina, 10);
@@ -108,6 +120,18 @@ public class Posts {
         }
         grupoAtual.setTopicos(topicos);
         
+        // TESTES DE NOTIFICACAO {                
+        Usuario donoGrupo = grupoAtual.getDonoGrupo(); //TESTE  
+        if (usuarioAut.getUsuario().getId() != donoGrupo.getId()){
+            Notificacao notificacao = new Notificacao("Novo post no grupo " + grupoAtual.getNome() + ".", "", "", "", "", "mensagem"); //TESTE
+            notificacao = notificacaoDAO.save(notificacao); //TESTE
+            List<Notificacao> notificacoes = donoGrupo.getNotificacoes(); //TESTE  
+            notificacoes.add(notificacao); //TESTE
+            donoGrupo.setNotificacoes(notificacoes); //TESTE
+            usuarioDAO.save(donoGrupo); //TESTE
+        }
+        // } TESTES DE NOTIFICACAO
+               
         topicoDAO.save(topicos.get(0));
         grupoDAO.save(grupoAtual);
                 
