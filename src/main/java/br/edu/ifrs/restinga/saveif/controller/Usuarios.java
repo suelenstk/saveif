@@ -321,11 +321,24 @@ public class Usuarios {
             
             
         } else
-            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá negar participação em grupos.");
-        
-           
+            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá negar participação em grupos.");     
     }
     
-    
-
+    @RequestMapping(path = "/usuarios/{idUsuario}/grupos/{idGrupo}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void solicitarParticipacao(@PathVariable int idUsuario, @PathVariable int idGrupo) {
+        Grupo solicitante = grupoDAO.findById (idGrupo);   
+        Optional<Usuario> usuarioConvidado = usuarioDAO.findById(idUsuario);   
+        
+        List<Grupo> gruposSolicitacoes = usuarioConvidado.get().getGruposConvidado();
+        gruposSolicitacoes.add(solicitante);
+        usuarioConvidado.get().setGruposConvidado(gruposSolicitacoes);
+        
+        List<Usuario> usuariosConvidados = solicitante.getConvitesGrupo();
+        usuariosConvidados.add(usuarioConvidado.get());
+        solicitante.setConvitesGrupo(usuariosConvidados);
+        
+        usuarioDAO.save(usuarioConvidado.get());
+        grupoDAO.save (solicitante);
+    }
 }
