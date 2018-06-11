@@ -77,7 +77,7 @@ INSERT INTO `grupo` (`id`, `data_criacao`, `data_delecao`, `descricao`, `imagem`
 VALUES 
 (1, '2018-04-15', NULL, 'Grupo para um sistema de controle de concessionária de veículos.', NULL, 'Programação II', NULL, 'Aberto', '5', '2'),
 (2, '2018-04-15', NULL, 'Grupo ajuda em programação I.', NULL, 'Programação I', NULL, 'Aberto', '5', '3'),
-(3, '2018-04-20', NULL, 'Grupo de Eletrônica.', NULL, 'Eletrônica Digital', NULL, 'Aberto', '4', '4')
+(3, '2018-04-20', NULL, 'Grupo de Eletrônica.', NULL, 'Eletrônica Digital', NULL, 'Público', '4', '4')
 
 ;
 
@@ -95,7 +95,11 @@ VALUES
 ;
 
 INSERT INTO `grupo_integrantes_grupo` (`grupos_integrados_id`, `integrantes_grupo_id`) 
-VALUES ('1', '2')
+VALUES
+('1', '2'),
+('1', '5'),
+('2', '3'),
+('3', '4')
 ;
 
 
@@ -182,4 +186,3 @@ VALUES
 ('5', '7'),
 ('6', '8')
 ;
-
