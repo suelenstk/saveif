@@ -155,7 +155,7 @@ public class Usuarios {
         String token = JWT.create()
                 .withClaim("id", usuarioAut.getUsuario().getId()).
                 //                withExpiresAt(expira).
-                sign(algorithm);
+                        sign(algorithm);
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.set("token", token);
 
@@ -180,7 +180,7 @@ public class Usuarios {
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Usuario> listarParticipantes(@RequestParam(required = false,
             defaultValue = "0") int pagina,
-            @PathVariable int id) throws Exception {
+                                                 @PathVariable int id) throws Exception {
 
         PageRequest pageRequest = new PageRequest(pagina, 5);
 
@@ -198,28 +198,28 @@ public class Usuarios {
 
     @RequestMapping(path = "/usuarios/{id}/imagem", method = RequestMethod.POST)
     public ResponseEntity<InputStreamResource> inserirImagem(@PathVariable int id,
-            @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
+                                                             @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
 
         Optional<Usuario> findById = usuarioDAO.findById(id);
         Usuario alt = findById.get();
 
         try {
-            
+
             if (!uploadfiles.getContentType().equals("application/octet-stream")) {
-                
+
                 System.out.println(uploadfiles.getContentType());
                 alt.setTipoImagem(uploadfiles.getContentType());
                 alt.setImagem(uploadfiles.getBytes());
                 usuarioDAO.save(alt);
 
                 return recuperarImagem(id);
-                
+
 
             } else {
                 return recuperarImagem(id);
-                
+
             }
-            
+
 
         } catch (IOException ex) {
 
@@ -337,21 +337,4 @@ public class Usuarios {
         }
     }
 
-    @RequestMapping(path = "/usuarios/{idUsuario}/grupos/{idGrupo}", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    public void solicitarParticipacao(@PathVariable int idUsuario, @PathVariable int idGrupo) {
-        Grupo solicitante = grupoDAO.findById(idGrupo);
-        Optional<Usuario> usuarioConvidado = usuarioDAO.findById(idUsuario);
-
-        List<Grupo> gruposSolicitacoes = usuarioConvidado.get().getGruposConvidado();
-        gruposSolicitacoes.add(solicitante);
-        usuarioConvidado.get().setGruposConvidado(gruposSolicitacoes);
-
-        List<Usuario> usuariosConvidados = solicitante.getConvitesGrupo();
-        usuariosConvidados.add(usuarioConvidado.get());
-        solicitante.setConvitesGrupo(usuariosConvidados);
-
-        usuarioDAO.save(usuarioConvidado.get());
-        grupoDAO.save(solicitante);
-    }
 }

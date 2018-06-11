@@ -12,8 +12,10 @@ import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Notificacao;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -25,11 +27,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
+
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -48,10 +52,10 @@ public class Grupos {
 
     @Autowired
     CategoriaDAO categoriaDAO;
-    
+
     @Autowired
     UsuarioDAO usuarioDAO;
-    
+
     @Autowired
     NotificacaoDAO notificacaoDAO;
 
@@ -79,35 +83,75 @@ public class Grupos {
         return grupoDAO.findById(id);
 
     }
-        
+
+    @RequestMapping(path = "/grupos/{idGrupo}/convite/{idUsuario}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public void convidarParticipante(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario) {
+
+        Optional<Usuario> findById = usuarioDAO.findById(idUsuario);
+        Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
+
+        if (grupoDAO.existsById(idGrupo) && findById.isPresent()) {
+            Grupo grupo = grupoDAO.findById(idGrupo);
+
+            if (grupo.getCoordenadoresGrupo().contains(logado)
+                    || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
+
+                Usuario convidado = findById.get();
+
+                List<Usuario> convites = grupo.getConvitesGrupo();
+                convites.add(convidado);
+                grupo.setConvitesGrupo(convites);
+
+                grupoDAO.save(grupo);
+
+                Notificacao notificacao = new Notificacao("Você foi convidado a participar do grupo ", "", "",
+                        Integer.toString(grupo.getId()), grupo.getNome(), "convite");
+
+                notificacao = notificacaoDAO.save(notificacao);
+
+                List<Notificacao> notificacoesUsuario = convidado.getNotificacoes();
+                notificacoesUsuario.add(notificacao);
+                convidado.setNotificacoes(notificacoesUsuario);
+
+                usuarioDAO.save(convidado);
+
+            } else
+                throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão convidar participantes para o grupo.");
+
+        } else
+            throw new ForbiddenException("Usuário ou grupo não encontrado.");
+
+    }
+
     @RequestMapping(path = "/grupos/{id}/solicitar/{idUsuario}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void solicitarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id, @PathVariable int idUsuario) throws Exception {
 
         if (usuarioAut == null ||                   //TESTE
-            usuarioAut.getUsuario().getPermissoes().contains("administrador")
-            ||usuarioAut.getUsuario().getId() == idUsuario ) {          
-        
+                usuarioAut.getUsuario().getPermissoes().contains("administrador")
+                || usuarioAut.getUsuario().getId() == idUsuario) {
+
             Optional<Usuario> findById = usuarioDAO.findById(idUsuario);
 
             if (grupoDAO.existsById(id) && findById.isPresent()) {
 
-                Grupo grupo = grupoDAO.findById(id);            
+                Grupo grupo = grupoDAO.findById(id);
 
-                Usuario solicitante = findById.get();      
+                Usuario solicitante = findById.get();
 
-                if (grupo.getTipoPrivacidade().equalsIgnoreCase("aberto")){  
-                    List<Usuario> integrantes  = grupo.getIntegrantesGrupo();
+                if (grupo.getTipoPrivacidade().equalsIgnoreCase("aberto")) {
+                    List<Usuario> integrantes = grupo.getIntegrantesGrupo();
                     integrantes.add(solicitante);
                     grupo.setIntegrantesGrupo(integrantes);
 
-                } else if (grupo.getTipoPrivacidade().equalsIgnoreCase("publico")|| grupo.getTipoPrivacidade().equalsIgnoreCase("público")){               
+                } else if (grupo.getTipoPrivacidade().equalsIgnoreCase("publico") || grupo.getTipoPrivacidade().equalsIgnoreCase("público")) {
                     List<Usuario> solicitacoes = grupo.getSolicitantesGrupo();
                     solicitacoes.add(solicitante);
                     grupo.setSolicitantesGrupo(solicitacoes);
 
                     Notificacao notificacao = new Notificacao(" solicitou participação no grupo ",
-                    Integer.toString(solicitante.getId()), solicitante.getNome(), Integer.toString(grupo.getId()), grupo.getNome(), "solicitacao");
+                            Integer.toString(solicitante.getId()), solicitante.getNome(), Integer.toString(grupo.getId()), grupo.getNome(), "solicitacao");
 
                     notificacao = notificacaoDAO.save(notificacao);
 
@@ -122,120 +166,120 @@ public class Grupos {
 
                 } else
                     throw new Exception("Grupos privados não aceitam inscrição.");
-                
+
                 grupoDAO.save(grupo);
 
 
             } else
-                throw new ForbiddenException("Usuário ou grupo não encontrado.");          
-            
+                throw new ForbiddenException("Usuário ou grupo não encontrado.");
+
         } else
-            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá solicitar inscrição em grupos.");      
+            throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá solicitar inscrição em grupos.");
     }
 
 
     @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/aceite/{idNotificacao}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void aceitarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario , @PathVariable(required = false) Integer idNotificacao) {
-        
+    public void aceitarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario, @PathVariable(required = false) Integer idNotificacao) {
+
         if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
-            notificacaoDAO.deleteById(idNotificacao);         
-        
+            notificacaoDAO.deleteById(idNotificacao);
+
         Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);
         Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
 
-        if ( grupoDAO.existsById(idGrupo) && usuarioFind.isPresent() ) {
-            Grupo grupo = grupoDAO.findById(idGrupo);  
+        if (grupoDAO.existsById(idGrupo) && usuarioFind.isPresent()) {
+            Grupo grupo = grupoDAO.findById(idGrupo);
 
-            if ( grupo.getCoordenadoresGrupo().contains(logado)   
-                || usuarioAut.getUsuario().getPermissoes().contains("administrador") ) {
-                
-                        Usuario usuario = usuarioFind.get();
-                        
+            if (grupo.getCoordenadoresGrupo().contains(logado)
+                    || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
 
-                        List<Usuario> solicitacoes = grupo.getSolicitantesGrupo();  
-
-                        if (solicitacoes.contains(usuario)){
-                            
-                            List<Usuario> integrantes  = grupo.getIntegrantesGrupo();
-                            integrantes.add(usuario);
-                            grupo.setIntegrantesGrupo(integrantes);
-                            
-                            solicitacoes.remove(usuario);
-                            grupo.setSolicitantesGrupo(solicitacoes);
-                            
-                            grupoDAO.save(grupo);          
+                Usuario usuario = usuarioFind.get();
 
 
-                        } else
-                            throw new ForbiddenException("Grupo não recebeu solicitação de usuário.");           
+                List<Usuario> solicitacoes = grupo.getSolicitantesGrupo();
+
+                if (solicitacoes.contains(usuario)) {
+
+                    List<Usuario> integrantes = grupo.getIntegrantesGrupo();
+                    integrantes.add(usuario);
+                    grupo.setIntegrantesGrupo(integrantes);
+
+                    solicitacoes.remove(usuario);
+                    grupo.setSolicitantesGrupo(solicitacoes);
+
+                    grupoDAO.save(grupo);
+
+
+                } else
+                    throw new ForbiddenException("Grupo não recebeu solicitação de usuário.");
 
 
             } else
                 throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão aceitar participantes para o grupo.");
 
-        
+
         } else
-            throw new ForbiddenException("Usuário ou grupo não encontrado."); 
-        
+            throw new ForbiddenException("Usuário ou grupo não encontrado.");
+
     }
- 
-    
+
+
     @RequestMapping(path = "/grupos/{idGrupo}/inscricao/{idUsuario}/negacao/{idNotificacao}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void negarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario , @PathVariable(required = false) Integer idNotificacao) {
-        
+    public void negarInscricao(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario, @PathVariable(required = false) Integer idNotificacao) {
+
         if (idNotificacao != null && notificacaoDAO.existsById(idNotificacao))
-            notificacaoDAO.deleteById(idNotificacao);         
-        
+            notificacaoDAO.deleteById(idNotificacao);
+
         Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);
         Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
 
-        if ( grupoDAO.existsById(idGrupo) && usuarioFind.isPresent() ) {
-            Grupo grupo = grupoDAO.findById(idGrupo);  
+        if (grupoDAO.existsById(idGrupo) && usuarioFind.isPresent()) {
+            Grupo grupo = grupoDAO.findById(idGrupo);
 
-            if ( grupo.getCoordenadoresGrupo().contains(logado)   
-                || usuarioAut.getUsuario().getPermissoes().contains("administrador") ) {
-                
-                        Usuario usuario = usuarioFind.get();                        
+            if (grupo.getCoordenadoresGrupo().contains(logado)
+                    || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
 
-                        List<Usuario> solicitacoes = grupo.getSolicitantesGrupo();  
+                Usuario usuario = usuarioFind.get();
 
-                        if (solicitacoes.contains(usuario)){
-                          
-                            solicitacoes.remove(usuario);
-                            grupo.setSolicitantesGrupo(solicitacoes);
-                            
-                            grupoDAO.save(grupo);          
+                List<Usuario> solicitacoes = grupo.getSolicitantesGrupo();
+
+                if (solicitacoes.contains(usuario)) {
+
+                    solicitacoes.remove(usuario);
+                    grupo.setSolicitantesGrupo(solicitacoes);
+
+                    grupoDAO.save(grupo);
 
 
-                        } else
-                            throw new ForbiddenException("Grupo não recebeu solicitação de usuário.");           
+                } else
+                    throw new ForbiddenException("Grupo não recebeu solicitação de usuário.");
 
 
             } else
                 throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão negar participantes para o grupo.");
 
-        
+
         } else
-            throw new ForbiddenException("Usuário ou grupo não encontrado."); 
-        
-    }   
-    
-        
+            throw new ForbiddenException("Usuário ou grupo não encontrado.");
+
+    }
+
+
     @RequestMapping(path = "/grupos/integrantes/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Grupo> pesquisaPorIntegrantes(@RequestParam(required = false, defaultValue = "0") int pagina,
-            @PathVariable int id) throws Exception {
+                                                  @PathVariable int id) throws Exception {
 
         PageRequest pageRequest = new PageRequest(pagina, 10);
-        
-        
+
+
         Usuario igual = new Usuario();
         igual.setId(id);
 
         return grupoDAO.findByIntegrantesGrupo(igual, pageRequest);
-        
+
     }
 
     @RequestMapping(path = "/grupos/{idCategoria}", method = RequestMethod.POST)
@@ -258,10 +302,10 @@ public class Grupos {
         Grupo grupoSalvo = grupoDAO.save(grupo);
         return grupoSalvo;
     }
-    
+
     @RequestMapping(path = "/grupos/{id}/imagem", method = RequestMethod.POST)
-    public ResponseEntity<InputStreamResource>  inserirImagem(@PathVariable int id,
-                            @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
+    public ResponseEntity<InputStreamResource> inserirImagem(@PathVariable int id,
+                                                             @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
         Grupo grupo = grupoDAO.findById(id);
 
         try {
@@ -271,7 +315,7 @@ public class Grupos {
             return recuperarImagem(id);
 
         } catch (IOException ex) {
-            
+
             ex.printStackTrace();
             throw new Exception("Erro ao salvar arquivo de imagem");
         }
@@ -282,16 +326,16 @@ public class Grupos {
             throws IOException {
         Grupo grupo = grupoDAO.findById(id);
         if (grupo.getImagem() == null) {
-                HttpHeaders respHeaders = new HttpHeaders();
-                respHeaders.setContentType(MediaType.valueOf("image/jpeg"));
-                InputStreamResource img =
-                new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semImagem.jpeg"))));
+            HttpHeaders respHeaders = new HttpHeaders();
+            respHeaders.setContentType(MediaType.valueOf("image/jpeg"));
+            InputStreamResource img =
+                    new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(Paths.get("semImagem.jpeg"))));
             return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
         }
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.setContentType(MediaType.valueOf(grupo.getTipoImagem()));
         InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(grupo.getImagem()));
         return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
-    } 
-    
+    }
+
 }
