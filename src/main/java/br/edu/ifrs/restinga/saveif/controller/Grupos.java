@@ -69,11 +69,17 @@ public class Grupos {
     @ResponseStatus(HttpStatus.OK)
     public void atualizar(@PathVariable int id, @RequestBody Grupo grupo, @PathVariable int idCategoria) {
         if (grupoDAO.existsById(id)) {
-            grupo.setId(id);
+            
+            Grupo grupoAtualizado = grupoDAO.findById(id);
+            grupoAtualizado.setId(id);
+            grupoAtualizado.setNome(grupo.getNome());
+            grupoAtualizado.setDescricao(grupo.getDescricao());
+            grupoAtualizado.setTipoPrivacidade(grupo.getTipoPrivacidade());        
+            
             Categoria categoria = categoriaDAO.findById(idCategoria);
 
-            grupo.setCategoria(categoria);
-            grupoDAO.save(grupo);
+            grupoAtualizado.setCategoria(categoria);
+            grupoDAO.save(grupoAtualizado);
         }
     }
 
