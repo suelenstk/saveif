@@ -92,41 +92,42 @@ public class Grupos {
 
     @RequestMapping(path = "/grupos/{idGrupo}/convite/{idUsuario}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void convidarParticipante(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario) {
+    public void convidarParticipante(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @RequestBody List <Integer> idsUsuarios) {
 
-        Optional<Usuario> findById = usuarioDAO.findById(idUsuario);
         Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
 
-        if (grupoDAO.existsById(idGrupo) && findById.isPresent()) {
-            Grupo grupo = grupoDAO.findById(idGrupo);
+        Grupo grupo = grupoDAO.findById(idGrupo);
 
             if (grupo.getCoordenadoresGrupo().contains(logado)
                     || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
+                
+                
+                for (int i=0; i >= idsUsuarios.size(); i++){
+                    
+                    Optional<Usuario> findById = usuarioDAO.findById(idsUsuarios.get(i));
+                    Usuario convidado = findById.get();
+                    
+                    if (grupoDAO.existsById(idGrupo) && findById.isPresent()) {
+                        List<Usuario> convites = grupo.getConvitesGrupo();
+                        convites.add(convidado);
+                        grupo.setConvitesGrupo(convites);
 
-                Usuario convidado = findById.get();
+                        grupoDAO.save(grupo);
 
-                List<Usuario> convites = grupo.getConvitesGrupo();
-                convites.add(convidado);
-                grupo.setConvitesGrupo(convites);
+                        Notificacao notificacao = new Notificacao("Você foi convidado a participar do grupo ", "", "",
+                            Integer.toString(grupo.getId()), grupo.getNome(), "convite");
 
-                grupoDAO.save(grupo);
+                        notificacao = notificacaoDAO.save(notificacao);
 
-                Notificacao notificacao = new Notificacao("Você foi convidado a participar do grupo ", "", "",
-                        Integer.toString(grupo.getId()), grupo.getNome(), "convite");
+                        List<Notificacao> notificacoesUsuario = convidado.getNotificacoes();
+                        notificacoesUsuario.add(notificacao);
+                        convidado.setNotificacoes(notificacoesUsuario);
 
-                notificacao = notificacaoDAO.save(notificacao);
-
-                List<Notificacao> notificacoesUsuario = convidado.getNotificacoes();
-                notificacoesUsuario.add(notificacao);
-                convidado.setNotificacoes(notificacoesUsuario);
-
-                usuarioDAO.save(convidado);
-
-            } else
-                throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão convidar participantes para o grupo.");
-
+                        usuarioDAO.save(convidado);
+                } else throw new ForbiddenException("Usuário ou grupo não encontrado.");
+            }
         } else
-            throw new ForbiddenException("Usuário ou grupo não encontrado.");
+            throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão convidar participantes para o grupo.");
 
     }
 
@@ -172,13 +173,9 @@ public class Grupos {
 
                 } else
                     throw new Exception("Grupos privados não aceitam inscrição.");
-
                 grupoDAO.save(grupo);
-
-
             } else
                 throw new ForbiddenException("Usuário ou grupo não encontrado.");
-
         } else
             throw new ForbiddenException("Além dos administradores do sistema somente o próprio usuário poderá solicitar inscrição em grupos.");
     }
@@ -219,12 +216,8 @@ public class Grupos {
 
                 } else
                     throw new ForbiddenException("Grupo não recebeu solicitação de usuário.");
-
-
             } else
                 throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão aceitar participantes para o grupo.");
-
-
         } else
             throw new ForbiddenException("Usuário ou grupo não encontrado.");
 
@@ -261,8 +254,6 @@ public class Grupos {
 
                 } else
                     throw new ForbiddenException("Grupo não recebeu solicitação de usuário.");
-
-
             } else
                 throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão negar participantes para o grupo.");
 
