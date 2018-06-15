@@ -56,7 +56,8 @@ public class Topicos {
              
         Grupo grupoAtual = grupoDAO.findById(idGrupo);
         boolean coordenador = false;
-        List<Usuario> coordenadores = grupoAtual.getCoordenadoresGrupo();
+        List<Usuario> coordenadores = new ArrayList<>();
+        coordenadores = grupoAtual.getCoordenadoresGrupo();
         
         for (int i=0; i>=coordenadores.size(); i++){
             if (coordenadores.get(i).getId()==usuarioAut.getUsuario().getId()){
@@ -65,7 +66,7 @@ public class Topicos {
             }
         }
         
-        if (grupoAtual.getDonoGrupo().getId()==usuarioAut.getUsuario().getId()||coordenador){
+        if ((grupoAtual.getDonoGrupo().getId()==usuarioAut.getUsuario().getId())||(coordenador==true)){
         Topico topicoSalvo = topicoDAO.save(topico);
         
         List<Topico> topicos = new ArrayList<>();
@@ -77,7 +78,7 @@ public class Topicos {
         grupoDAO.save(grupoAtual);
         
         return topicoSalvo;
-        }else throw new ForbiddenException("Apenas o dono do grupo pode criar tópicos.");
+        }else throw new ForbiddenException("Apenas o dono do grupo ou coordenador pode criar tópicos.");
     }
     
     
