@@ -11,6 +11,7 @@ import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.dao.TopicoDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
+import br.edu.ifrs.restinga.saveif.modelo.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,17 @@ public class Topicos {
         topico.setCriadorTopico(usuarioAut.getUsuario());
              
         Grupo grupoAtual = grupoDAO.findById(idGrupo);
+        boolean coordenador = false;
+        List<Usuario> coordenadores = grupoAtual.getCoordenadoresGrupo();
         
-        if (grupoAtual.getDonoGrupo().getId()==usuarioAut.getUsuario().getId()){
-
+        for (int i=0; i>=coordenadores.size(); i++){
+            if (coordenadores.get(i).getId()==usuarioAut.getUsuario().getId()){
+                coordenador = true;
+                i=coordenadores.size();
+            }
+        }
+        
+        if (grupoAtual.getDonoGrupo().getId()==usuarioAut.getUsuario().getId()||coordenador){
         Topico topicoSalvo = topicoDAO.save(topico);
         
         List<Topico> topicos = new ArrayList<>();
