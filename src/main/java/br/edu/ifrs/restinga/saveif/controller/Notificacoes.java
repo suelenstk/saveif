@@ -6,12 +6,7 @@ import br.edu.ifrs.restinga.saveif.modelo.Notificacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -38,7 +33,13 @@ public class Notificacoes {
         PageRequest pageRequest = new PageRequest(pagina, 20);
 
         return notificacaoDAO.findNotificacaoUsuario(id, pageRequest);
+    }
 
+    @RequestMapping(path = "/usuarios/{id}/numeronotificacoes", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public int numeroNotificacoesUsuario(@PathVariable int id) throws Exception {
+        PageRequest pageRequest = new PageRequest(0, 20);
+        return (int) notificacaoDAO.findNotificacaoUsuario(id, pageRequest).getTotalElements();
     }
 
     @RequestMapping(path = "/notificacoes/{id}", method = RequestMethod.DELETE)
