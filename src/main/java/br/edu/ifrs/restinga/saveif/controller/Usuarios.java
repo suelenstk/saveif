@@ -131,6 +131,20 @@ public class Usuarios {
 
         }
     }
+    
+    @RequestMapping(path = "/usuarios/recuperar/{id}", method = RequestMethod.PUT)
+    public void alterarSenha(@PathVariable int id, @RequestBody Usuario usuario) throws Exception{
+        
+         if(usuarioDAO.existById(id)){
+             
+             usuario.setId(id);
+             Optional<Usuario> findById = usuarioDAO.findById(id);
+             Usuario alt = findById.get();
+             alt.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
+             
+             usuarioDAO.save(alt);
+         }
+    }
 
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
