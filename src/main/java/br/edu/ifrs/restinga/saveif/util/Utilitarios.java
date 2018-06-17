@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 public class Utilitarios {
 
+    
     public boolean validaEmail(String email) {
         String padraoDeEmail
                 = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"

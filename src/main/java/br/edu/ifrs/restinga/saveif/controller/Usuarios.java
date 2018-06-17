@@ -121,7 +121,7 @@ public class Usuarios {
             usuario.setId(id);
             Optional<Usuario> findById = usuarioDAO.findById(id);
             Usuario alt = findById.get();
-
+               System.out.println(usuario);
             alt.setNome(usuario.getNome());
             alt.setTipoVinculo(usuario.getTipoVinculo());
             alt.setCurso(usuario.getCurso());
@@ -194,6 +194,18 @@ public class Usuarios {
     @ResponseStatus(HttpStatus.OK)
     public boolean consultarExistencia(@RequestParam(required = false) String email) {
         return usuarioDAO.findByEmail(email + "@restinga.ifrs.edu.br") != null;
+    }
+    
+    
+    @RequestMapping(path = "/usuarios/email", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public Usuario consultarEmail(@RequestParam(required = false) String email) throws Exception {
+        
+        Usuario usuario = usuarioDAO.findByEmail(email);
+        if(usuario != null)
+          return usuario;
+        else
+            throw new Exception("Não existe nenhum usuário com esse Email!");
     }
 
     @RequestMapping(path = "/usuarios/{id}/imagem", method = RequestMethod.POST)
