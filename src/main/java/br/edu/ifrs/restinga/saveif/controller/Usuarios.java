@@ -135,7 +135,7 @@ public class Usuarios {
     @RequestMapping(path = "/usuarios/recuperar/{id}", method = RequestMethod.PUT)
     public void alterarSenha(@PathVariable int id, @RequestBody Usuario usuario) throws Exception{
         
-         if(usuarioDAO.existById(id)){
+         if(usuarioDAO.existsById(id)){
              
              usuario.setId(id);
              Optional<Usuario> findById = usuarioDAO.findById(id);
