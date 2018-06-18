@@ -66,7 +66,7 @@ public class Topicos {
             }
         }
         
-        if ((grupoAtual.getDonoGrupo().getId()==usuarioAut.getUsuario().getId())||(coordenador==true)){
+        if ((grupoAtual.getDonoGrupo().getId()==usuarioAut.getUsuario().getId())||coordenador){
         Topico topicoSalvo = topicoDAO.save(topico);
         
         List<Topico> topicos = new ArrayList<>();
