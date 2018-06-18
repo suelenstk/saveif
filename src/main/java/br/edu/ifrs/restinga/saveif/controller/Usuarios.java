@@ -91,7 +91,25 @@ public class Usuarios {
             return usuarioDAO.findByNomeContainingOrderByNome(contem, pageRequest);
         }
     }
-
+    
+    /*
+    @RequestMapping(path = "/usuarios/pesquisar/nome/{idGrupo}", method = RequestMethod.GET)
+    public Iterable<Usuario> pesquisaPorNomeNaoEstaGrupo(
+            @RequestParam(required = false) String igual,
+            @RequestParam(required = false) String contem,
+            @RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int idGrupo) {
+        PageRequest pageRequest = new PageRequest(pagina, 8);
+        
+        Grupo integrantes = new Grupo();
+        integrantes.setId(idGrupo);
+        
+        if (igual != null) {
+            return usuarioDAO.findByNomeAndGruposIntegradosNotIn(igual, integrantes, pageRequest);
+        } else {
+            return usuarioDAO.findByNomeContainingOrderByNomeAndGruposIntegradosNotIn(contem, integrantes, pageRequest);
+        }
+    }*/
+    
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Usuario> recuperar(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id) {
@@ -152,7 +170,6 @@ public class Usuarios {
         if (usuarioDAO.existsById(id)) {
             usuarioDAO.deleteById(id);
         }
-
     }
 
     public static final String SEGREDO
@@ -193,15 +210,13 @@ public class Usuarios {
     @RequestMapping(path = "/usuario/participantes/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Usuario> listarParticipantes(@RequestParam(required = false,
-            defaultValue = "0") int pagina,
-                                                 @PathVariable int id) throws Exception {
+            defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
 
         PageRequest pageRequest = new PageRequest(pagina, 5);
-
-        Grupo igual = new Grupo();
-        igual.setId(id);
-
-        return usuarioDAO.findByGruposIntegrados(igual, pageRequest);
+        
+        Grupo igual = grupoDAO.findById(id);
+     
+        return usuarioDAO.findByGruposIntegrados (igual, pageRequest);
     }
 
     @RequestMapping(path = "/usuarios/consultar", method = RequestMethod.GET)
