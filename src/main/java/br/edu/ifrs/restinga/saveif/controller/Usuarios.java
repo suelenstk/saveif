@@ -4,9 +4,11 @@ import br.edu.ifrs.restinga.saveif.aut.ForbiddenException;
 import br.edu.ifrs.restinga.saveif.aut.UsuarioAut;
 import br.edu.ifrs.restinga.saveif.dao.GrupoDAO;
 import br.edu.ifrs.restinga.saveif.dao.NotificacaoDAO;
+import br.edu.ifrs.restinga.saveif.dao.UsuarioCodigoDAO;
 import br.edu.ifrs.restinga.saveif.dao.UsuarioDAO;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
+import br.edu.ifrs.restinga.saveif.modelo.UsuarioCodigo;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
@@ -65,6 +67,9 @@ public class Usuarios {
     UsuarioDAO usuarioDAO;
 
     @Autowired
+    UsuarioCodigoDAO usuarioCodigoDAO;
+
+    @Autowired
     GrupoDAO grupoDAO;
 
     @Autowired
@@ -91,7 +96,7 @@ public class Usuarios {
             return usuarioDAO.findByNomeContainingOrderByNome(contem, pageRequest);
         }
     }
-    
+
     /*
     @RequestMapping(path = "/usuarios/pesquisar/nome/{idGrupo}", method = RequestMethod.GET)
     public Iterable<Usuario> pesquisaPorNomeNaoEstaGrupo(
@@ -109,7 +114,6 @@ public class Usuarios {
             return usuarioDAO.findByNomeContainingOrderByNomeAndGruposIntegradosNotIn(contem, integrantes, pageRequest);
         }
     }*/
-    
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Usuario> recuperar(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id) {
@@ -139,7 +143,7 @@ public class Usuarios {
             usuario.setId(id);
             Optional<Usuario> findById = usuarioDAO.findById(id);
             Usuario alt = findById.get();
-               System.out.println(usuario);
+            System.out.println(usuario);
             alt.setNome(usuario.getNome());
             alt.setTipoVinculo(usuario.getTipoVinculo());
             alt.setCurso(usuario.getCurso());
@@ -149,20 +153,23 @@ public class Usuarios {
 
         }
     }
-    
-    @RequestMapping(path = "/usuarios/recuperar/{id}", method = RequestMethod.PUT)
-    public void alterarSenha(@PathVariable int id, @RequestBody Usuario usuario) throws Exception{
+
+    @RequestMapping(path = "/usuarios/recuperar", method = RequestMethod.PUT)
+    public void alterarSenha(@RequestParam(required = false) String codigo,@RequestBody Usuario usuario) throws Exception {
         
-         if(usuarioDAO.existsById(id)){
-             
-             usuario.setId(id);
-             Optional<Usuario> findById = usuarioDAO.findById(id);
-             Usuario alt = findById.get();
-             alt.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
-             
-             usuarioDAO.save(alt);
-         }
+        UsuarioCodigo codigoUsuario = usuarioCodigoDAO.findByCodigo(codigo); 
+        //System.out.println("dd: " + codigoUsuario);
+        Optional<Usuario> findById = 
+                usuarioDAO.findById(codigoUsuario.getUsuarioCodigo().getId());
+        
+        Usuario alt = findById.get();      
+        
+        alt.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
+
+        usuarioDAO.save(alt);
+
     }
+    
 
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
@@ -186,7 +193,7 @@ public class Usuarios {
         String token = JWT.create()
                 .withClaim("id", usuarioAut.getUsuario().getId()).
                 //                withExpiresAt(expira).
-                        sign(algorithm);
+                sign(algorithm);
         HttpHeaders respHeaders = new HttpHeaders();
         respHeaders.set("token", token);
 
@@ -213,10 +220,10 @@ public class Usuarios {
             defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
 
         PageRequest pageRequest = new PageRequest(pagina, 5);
-        
+
         Grupo igual = grupoDAO.findById(id);
-     
-        return usuarioDAO.findByGruposIntegrados (igual, pageRequest);
+
+        return usuarioDAO.findByGruposIntegrados(igual, pageRequest);
     }
 
     @RequestMapping(path = "/usuarios/consultar", method = RequestMethod.GET)
@@ -224,22 +231,30 @@ public class Usuarios {
     public boolean consultarExistencia(@RequestParam(required = false) String email) {
         return usuarioDAO.findByEmail(email + "@restinga.ifrs.edu.br") != null;
     }
-    
-    
+
     @RequestMapping(path = "/usuarios/email", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public Usuario consultarEmail(@RequestParam(required = false) String email) throws Exception {
-        
+
         Usuario usuario = usuarioDAO.findByEmail(email);
-        if(usuario != null)
-          return usuario;
-        else
+        if (usuario != null) {
+                       
+            return usuario;
+        
+        } else {
             throw new Exception("Não existe nenhum usuário com esse Email!");
+        }
+    }
+    
+    @RequestMapping(path = "/usuarios/code", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public UsuarioCodigo inserirCodigo(@RequestBody UsuarioCodigo usuarioCodigo) throws Exception{
+        return usuarioCodigoDAO.save(usuarioCodigo);       
     }
 
-    @RequestMapping(path = "/usuarios/{id}/imagem", method = RequestMethod.POST)
+    @RequestMapping(path = "/usuarios/{id}/imagem", method = RequestMethod.PUT)
     public ResponseEntity<InputStreamResource> inserirImagem(@PathVariable int id,
-                                                             @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
+            @RequestParam("arquivo") MultipartFile uploadfiles) throws Exception {
 
         Optional<Usuario> findById = usuarioDAO.findById(id);
         Usuario alt = findById.get();
@@ -255,12 +270,10 @@ public class Usuarios {
 
                 return recuperarImagem(id);
 
-
             } else {
                 return recuperarImagem(id);
 
             }
-
 
         } catch (IOException ex) {
 
