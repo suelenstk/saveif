@@ -15,7 +15,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +23,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -36,6 +39,8 @@ import java.util.Optional;
 
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -43,6 +48,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class Usuarios {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @RequestMapping(path = "/usuarios", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
@@ -155,21 +163,36 @@ public class Usuarios {
     }
 
     @RequestMapping(path = "/usuarios/recuperar", method = RequestMethod.PUT)
-    public void alterarSenha(@RequestParam(required = false) String codigo,@RequestBody Usuario usuario) throws Exception {
-        
-        UsuarioCodigo codigoUsuario = usuarioCodigoDAO.findByCodigo(codigo); 
+    public void alterarSenha(@RequestParam(required = false) String codigo, 
+            @RequestBody Usuario usuario) throws Exception {
+
+        UsuarioCodigo codigoUsuario = usuarioCodigoDAO.findByCodigo(codigo);
         //System.out.println("dd: " + codigoUsuario);
-        Optional<Usuario> findById = 
-                usuarioDAO.findById(codigoUsuario.getUsuarioCodigo().getId());
-        
-        Usuario alt = findById.get();      
-        
-        alt.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
+        try {
+            
+            if (usuarioDAO.existsById(codigoUsuario.getUsuarioCodigo().getId())) {
 
-        usuarioDAO.save(alt);
+                Optional<Usuario> findById
+                        = usuarioDAO.findById(codigoUsuario.getUsuarioCodigo().getId());
 
+                Usuario alt = findById.get();
+
+                alt.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
+
+                usuarioDAO.save(alt);
+
+            } else {
+                
+                throw new Exception("Usuário não encontrado");
+                
+            }
+
+        } catch (NullPointerException npe) {
+
+            throw new Exception("Não existe nenhum usuário para o código informado!");
+
+        }
     }
-    
 
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
@@ -238,18 +261,34 @@ public class Usuarios {
 
         Usuario usuario = usuarioDAO.findByEmail(email);
         if (usuario != null) {
-                       
+
             return usuario;
-        
+
         } else {
             throw new Exception("Não existe nenhum usuário com esse Email!");
         }
     }
-    
+
     @RequestMapping(path = "/usuarios/code", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioCodigo inserirCodigo(@RequestBody UsuarioCodigo usuarioCodigo) throws Exception{
-        return usuarioCodigoDAO.save(usuarioCodigo);       
+    public UsuarioCodigo inserirCodigo(@RequestBody UsuarioCodigo usuarioCodigo) throws Exception {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setSubject("Código de para alterar senha!");
+        message.setText("Seu código é: " + usuarioCodigo.getCodigo());
+        message.setTo("gstvcamargo@gmail.com");
+        message.setFrom(usuarioCodigo.getUsuarioCodigo().getEmail());
+        //message.setFrom("gstvcamargo@gmail.com");
+
+        try {
+            mailSender.send(message);
+            return usuarioCodigoDAO.save(usuarioCodigo);
+
+        } catch (Exception e) {
+            throw new Exception("Erro ao enviar Email! " + e.getMessage());
+        }
+
     }
 
     @RequestMapping(path = "/usuarios/{id}/imagem", method = RequestMethod.PUT)
