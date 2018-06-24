@@ -273,12 +273,16 @@ public class Usuarios {
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioCodigo inserirCodigo(@RequestBody UsuarioCodigo usuarioCodigo) throws Exception {
 
+        Optional<Usuario> usuario = usuarioDAO.findById(usuarioCodigo.getId());
+        usuarioCodigo.setUsuarioCodigo(usuario.get());
+        
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setSubject("Código de para alterar senha!");
         message.setText("Seu código é: " + usuarioCodigo.getCodigo());
-        message.setTo("gstvcamargo@gmail.com");
-        message.setFrom(usuarioCodigo.getUsuarioCodigo().getEmail());
+        message.setFrom("desenvolvimento.sistemas2@gmail.com");
+        //System.out.println(usuarioCodigo.getUsuarioCodigo().getEmail());
+        message.setTo(usuarioCodigo.getUsuarioCodigo().getEmail());
         //message.setFrom("gstvcamargo@gmail.com");
 
         try {
