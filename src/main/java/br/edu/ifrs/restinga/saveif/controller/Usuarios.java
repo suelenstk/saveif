@@ -105,23 +105,22 @@ public class Usuarios {
         }
     }
 
-    /*
-    @RequestMapping(path = "/usuarios/pesquisar/nome/{idGrupo}", method = RequestMethod.GET)
+    @RequestMapping(path = "/usuarios/pesquisar/nome/grupo", method = RequestMethod.GET)
     public Iterable<Usuario> pesquisaPorNomeNaoEstaGrupo(
             @RequestParam(required = false) String igual,
             @RequestParam(required = false) String contem,
-            @RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int idGrupo) {
+            @RequestParam(required = false, defaultValue = "0") int pagina, @RequestParam(required = false) int idGrupo) {
         PageRequest pageRequest = new PageRequest(pagina, 8);
         
-        Grupo integrantes = new Grupo();
-        integrantes.setId(idGrupo);
+        Grupo integrantes = grupoDAO.findById(idGrupo);
         
         if (igual != null) {
             return usuarioDAO.findByNomeAndGruposIntegradosNotIn(igual, integrantes, pageRequest);
         } else {
-            return usuarioDAO.findByNomeContainingOrderByNomeAndGruposIntegradosNotIn(contem, integrantes, pageRequest);
+            return usuarioDAO.findByNomeContainingAndGruposIntegradosNotInOrderByNome(contem, integrantes, pageRequest);
         }
-    }*/
+    }
+    
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Usuario> recuperar(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id) {

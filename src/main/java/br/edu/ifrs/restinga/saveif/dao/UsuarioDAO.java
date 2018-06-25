@@ -16,10 +16,8 @@ public interface UsuarioDAO extends PagingAndSortingRepository<Usuario, Integer>
 
     Page<Usuario> findByNomeContainingOrderByNome(String nome, Pageable pageable);
     
-    /*
-    Page<Usuario> findByNomeAndGruposIntegradosNotIn (String nome, Grupo integrantes, Pageable pageable);
-    Iterable<Usuario> findByNomeContainingOrderByNomeAndGruposIntegradosNotIn(String nome, Grupo integrantes, Pageable pageable);
-    */
+    Page<Usuario> findByNomeAndGruposIntegradosNotIn(String nome, Grupo integrantes, Pageable pageable);
+    Page<Usuario> findByNomeContainingAndGruposIntegradosNotInOrderByNome(String nome, Grupo integrantes, Pageable pageable);
     
     Page<Usuario> findByGruposIntegrados(Grupo integrantes, Pageable pageable);
 
