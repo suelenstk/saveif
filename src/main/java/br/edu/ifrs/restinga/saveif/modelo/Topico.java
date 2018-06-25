@@ -2,6 +2,7 @@ package br.edu.ifrs.restinga.saveif.modelo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -21,32 +22,32 @@ public class Topico implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id; 
-  
-    @Column(nullable = false, length=80)
-    private String nome; 
-    
+    private int id;
+
+    @Column(nullable = false, length = 80)
+    private String nome;
+
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
-    private Date dataCriacao = new Date(System.currentTimeMillis());;
-    
+    private Date dataCriacao = new Date(System.currentTimeMillis());
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
-    private Date dataFinalizacao;    
-    
+    private Date dataFinalizacao;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
-    private Date dataDelecao;    
-    
+    private Date dataDelecao;
+
     @JsonIgnore
-    @OneToMany(orphanRemoval=true)
-    private List<Post> posts;  
-    
+    @OneToMany(orphanRemoval = true)
+    private List<Post> posts;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Usuario criadorTopico;
-    
+
     public Topico() {
     }
 
@@ -55,28 +56,32 @@ public class Topico implements Serializable {
         this.nome = nome;
         this.criadorTopico = criadorTopico;
     }
-    
-    
-    
+
 
     public int getId() {
         return id;
     }
+
     public String getNome() {
         return nome;
     }
+
     public Date getDataCriacao() {
         return dataCriacao;
     }
+
     public Date getDataFinalizacao() {
         return dataFinalizacao;
     }
+
     public Date getDataDelecao() {
         return dataDelecao;
     }
+
     public List<Post> getPosts() {
         return posts;
     }
+
     public Usuario getCriadorTopico() {
         return criadorTopico;
     }
@@ -87,10 +92,10 @@ public class Topico implements Serializable {
 
     public void setNome(String nome) throws Exception {
         if (nome == null || nome.isEmpty())
-            throw new Exception("O campo nome é de preenchimento obrigatório."); 
+            throw new Exception("O campo nome é de preenchimento obrigatório.");
         else if (nome.length() > 80)
             throw new Exception("Excedido o tamanho máximo para o campo nome");
-        
+
         this.nome = nome;
     }
 
@@ -113,10 +118,6 @@ public class Topico implements Serializable {
     public void setCriadorTopico(Usuario criadorTopico) {
         this.criadorTopico = criadorTopico;
     }
-    
-    
-    
-    
-    
-    
+
+
 }

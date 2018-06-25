@@ -69,13 +69,13 @@ public class Grupos {
     @ResponseStatus(HttpStatus.OK)
     public void atualizar(@PathVariable int id, @RequestBody Grupo grupo, @PathVariable int idCategoria) {
         if (grupoDAO.existsById(id)) {
-            
+
             Grupo grupoAtualizado = grupoDAO.findById(id);
             grupoAtualizado.setId(id);
             grupoAtualizado.setNome(grupo.getNome());
             grupoAtualizado.setDescricao(grupo.getDescricao());
-            grupoAtualizado.setTipoPrivacidade(grupo.getTipoPrivacidade());        
-            
+            grupoAtualizado.setTipoPrivacidade(grupo.getTipoPrivacidade());
+
             Categoria categoria = categoriaDAO.findById(idCategoria);
 
             grupoAtualizado.setCategoria(categoria);
@@ -85,45 +85,43 @@ public class Grupos {
 
     @RequestMapping(path = "/grupos/{id}", method = RequestMethod.GET)
     public Grupo listarGrupoEspecifico(@PathVariable int id) {
-
         return grupoDAO.findById(id);
-
     }
 
     @RequestMapping(path = "/grupos/{idGrupo}/convite/{idUsuario}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void convidarParticipante(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @RequestBody List <Integer> idsUsuarios) {
+    public void convidarParticipante(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @RequestBody List<Integer> idsUsuarios) {
 
         Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
 
         Grupo grupo = grupoDAO.findById(idGrupo);
 
-            if (grupo.getCoordenadoresGrupo().contains(logado)
-                    || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
-                
-                
-                for (int i=0; i >= idsUsuarios.size(); i++){
-                    
-                    Optional<Usuario> findById = usuarioDAO.findById(idsUsuarios.get(i));
-                    Usuario convidado = findById.get();
-                    
-                    if (grupoDAO.existsById(idGrupo) && findById.isPresent()) {
-                        List<Usuario> convites = grupo.getConvitesGrupo();
-                        convites.add(convidado);
-                        grupo.setConvitesGrupo(convites);
+        if (grupo.getCoordenadoresGrupo().contains(logado)
+                || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
 
-                        grupoDAO.save(grupo);
 
-                        Notificacao notificacao = new Notificacao("Você foi convidado a participar do grupo ", "", "",
+            for (int i = 0; i >= idsUsuarios.size(); i++) {
+
+                Optional<Usuario> findById = usuarioDAO.findById(idsUsuarios.get(i));
+                Usuario convidado = findById.get();
+
+                if (grupoDAO.existsById(idGrupo) && findById.isPresent()) {
+                    List<Usuario> convites = grupo.getConvitesGrupo();
+                    convites.add(convidado);
+                    grupo.setConvitesGrupo(convites);
+
+                    grupoDAO.save(grupo);
+
+                    Notificacao notificacao = new Notificacao("Você foi convidado a participar do grupo ", "", "",
                             Integer.toString(grupo.getId()), grupo.getNome(), "convite");
 
-                        notificacao = notificacaoDAO.save(notificacao);
+                    notificacao = notificacaoDAO.save(notificacao);
 
-                        List<Notificacao> notificacoesUsuario = convidado.getNotificacoes();
-                        notificacoesUsuario.add(notificacao);
-                        convidado.setNotificacoes(notificacoesUsuario);
+                    List<Notificacao> notificacoesUsuario = convidado.getNotificacoes();
+                    notificacoesUsuario.add(notificacao);
+                    convidado.setNotificacoes(notificacoesUsuario);
 
-                        usuarioDAO.save(convidado);
+                    usuarioDAO.save(convidado);
                 } else throw new ForbiddenException("Usuário ou grupo não encontrado.");
             }
         } else
@@ -268,15 +266,12 @@ public class Grupos {
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Grupo> pesquisaPorIntegrantes(@RequestParam(required = false, defaultValue = "0") int pagina,
                                                   @PathVariable int id) throws Exception {
-
         PageRequest pageRequest = new PageRequest(pagina, 10);
-
 
         Usuario igual = new Usuario();
         igual.setId(id);
 
         return grupoDAO.findByIntegrantesGrupo(igual, pageRequest);
-
     }
 
     @RequestMapping(path = "/grupos/{idCategoria}", method = RequestMethod.POST)

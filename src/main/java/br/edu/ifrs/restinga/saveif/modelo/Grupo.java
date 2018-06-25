@@ -39,8 +39,6 @@ public class Grupo implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date dataCriacao = new Date(System.currentTimeMillis());
-    ;
-
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
@@ -62,7 +60,6 @@ public class Grupo implements Serializable {
     @JoinColumn(nullable = false)
     private Usuario donoGrupo;
 
-    @JsonIgnore
     @ManyToMany
     private List<Usuario> coordenadoresGrupo;
 
@@ -153,7 +150,7 @@ public class Grupo implements Serializable {
     public List<Usuario> getConvitesGrupo() {
         return convitesGrupo;
     }
-    
+
     public List<Notificacao> getNotificacoes() {
         return notificacoes;
     }
