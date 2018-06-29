@@ -149,6 +149,7 @@ public class Grupos {
                     List<Usuario> integrantes = grupo.getIntegrantesGrupo();
                     integrantes.add(solicitante);
                     grupo.setIntegrantesGrupo(integrantes);
+                    grupoDAO.save(grupo);
 
                 } else if (grupo.getTipoPrivacidade().equalsIgnoreCase("publico") || grupo.getTipoPrivacidade().equalsIgnoreCase("público")) {
                     List<Usuario> solicitacoes = grupo.getSolicitantesGrupo();
@@ -163,15 +164,11 @@ public class Grupos {
 
                     List<Notificacao> notificacoes = grupo.getNotificacoes();
                     notificacoes.add(notificacao);
-
-                    Usuario donoGrupo = grupo.getDonoGrupo();           // TESTE 
-                    List<Notificacao> notificacoesDono = donoGrupo.getNotificacoes();   // TESTE
-                    notificacoesDono.add(notificacao);  // TESTE
-                    usuarioDAO.save(donoGrupo); // TESTE
+                    grupoDAO.save(grupo);
 
                 } else
                     throw new Exception("Grupos privados não aceitam inscrição.");
-                grupoDAO.save(grupo);
+                
             } else
                 throw new ForbiddenException("Usuário ou grupo não encontrado.");
         } else
@@ -329,5 +326,40 @@ public class Grupos {
         InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(grupo.getImagem()));
         return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
     }
+          
+    @RequestMapping(path = "/grupos/{idGrupo}/coordenador/{idUsuario}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public void tornarCoordenador(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario) {
 
+        Optional<Usuario> usuarioFind = usuarioDAO.findById(idUsuario);
+        Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
+
+        if (grupoDAO.existsById(idGrupo) && usuarioFind.isPresent()) {
+            Grupo grupo = grupoDAO.findById(idGrupo);
+
+            if (grupo.getDonoGrupo() == logado
+                    || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
+
+                Usuario usuario = usuarioFind.get();
+
+
+                List<Usuario> integrantes = grupo.getIntegrantesGrupo();
+
+                if (integrantes.contains(usuario)) {                    
+
+                    List<Usuario> coordenadores = grupo.getCoordenadoresGrupo();
+                    coordenadores.add(usuario);
+                    grupo.setCoordenadoresGrupo(coordenadores);
+
+                    grupoDAO.save(grupo);
+
+
+                } else
+                    throw new ForbiddenException("Usuário não é integrante do grupo.");
+            } else
+                throw new ForbiddenException("Além dos administradores do sistema somente o dono do grupo  poderá tornar participante um coordenador.");
+        } else
+            throw new ForbiddenException("Usuário ou grupo não encontrado.");
+
+    }
 }

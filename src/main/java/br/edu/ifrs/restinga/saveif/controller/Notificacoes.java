@@ -32,14 +32,13 @@ public class Notificacoes {
     public Iterable<Notificacao> pesquisaNotificacoesUsuario(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
         PageRequest pageRequest = new PageRequest(pagina, 20);
 
-        return notificacaoDAO.findNotificacaoUsuario(id, pageRequest);
+        return notificacaoDAO.findNotificacaoGrupos(id, pageRequest);
     }
 
     @RequestMapping(path = "/usuarios/{id}/numeronotificacoes", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public int numeroNotificacoesUsuario(@PathVariable int id) throws Exception {
-        PageRequest pageRequest = new PageRequest(0, 20);
-        return (int) notificacaoDAO.findNotificacaoUsuario(id, pageRequest).getTotalElements();
+        return  notificacaoDAO.countNotificacaoUsuario(id) + notificacaoDAO.countNotificacaoGrupos(id);
     }
 
     @RequestMapping(path = "/notificacoes/{id}", method = RequestMethod.DELETE)
