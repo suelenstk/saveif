@@ -360,6 +360,46 @@ public class Grupos {
                 throw new ForbiddenException("Além dos administradores do sistema somente o dono do grupo  poderá tornar participante um coordenador.");
         } else
             throw new ForbiddenException("Usuário ou grupo não encontrado.");
+    }
+    
+    @RequestMapping(path = "/grupos/{idGrupo}/remover/{idUsuario}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    public void removerParticipante(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int idGrupo, @PathVariable int idUsuario) {
+
+        Usuario logado = usuarioDAO.findByEmail(usuarioAut.getUsername());
+
+        Grupo grupo = grupoDAO.findById(idGrupo);
+
+        if (grupo.getCoordenadoresGrupo().contains(logado)
+                || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
+            
+  
+                Optional<Usuario> findById = usuarioDAO.findById(idUsuario);
+                Usuario removido = findById.get();
+                
+                if (!removido.getPermissoes().contains ("administrador")&&removido.getId()!=usuarioAut.getUsuario().getId()) {
+
+                if (grupoDAO.existsById(idGrupo) && findById.isPresent()) {
+                    List<Usuario> integrantes = grupo.getIntegrantesGrupo();
+                    integrantes.remove(removido);
+                    grupo.setIntegrantesGrupo(integrantes);
+
+                    grupoDAO.save(grupo);
+
+                    Notificacao notificacao = new Notificacao("Você foi removido (a) do grupo ", "", "",
+                            Integer.toString(grupo.getId()), grupo.getNome(), "remocao");
+
+                    notificacao = notificacaoDAO.save(notificacao);
+
+                    List<Notificacao> notificacoesUsuario = removido.getNotificacoes();
+                    notificacoesUsuario.add(notificacao);
+                    removido.setNotificacoes(notificacoesUsuario);
+
+                    usuarioDAO.save(removido);
+                } else throw new ForbiddenException("Usuário ou grupo não encontrado.");
+                } else throw new ForbiddenException("Não é possível remover um administrador.");
+        } else
+            throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão remover participantes do grupo.");
 
     }
 }

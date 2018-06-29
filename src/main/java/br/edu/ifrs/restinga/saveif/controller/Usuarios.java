@@ -117,7 +117,7 @@ public class Usuarios {
         if (igual != null) {
             return usuarioDAO.findByNomeAndGruposIntegradosNotIn(igual, integrantes, pageRequest);
         } else {
-            return usuarioDAO.findByNomeContainingAndGruposIntegradosNotInOrderByNome(contem, integrantes, pageRequest);
+            return usuarioDAO.findByNomeContainingAndGruposIntegradosNotInOrderByNome(idGrupo, pageRequest);
         }
     }
     
