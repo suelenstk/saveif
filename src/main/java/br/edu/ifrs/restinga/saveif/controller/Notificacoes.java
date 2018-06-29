@@ -27,18 +27,33 @@ public class Notificacoes {
     }
 
 
+//    @RequestMapping(path = "/usuarios/{id}/notificacoes", method = RequestMethod.GET)
+//    @ResponseStatus(HttpStatus.OK)
+//    public Iterable<Notificacao> pesquisaNotificacoesUsuario(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
+//        PageRequest pageRequest = new PageRequest(pagina, 20);
+//
+//        return notificacaoDAO.findNotificacaoGrupos(id, pageRequest);
+//    }
+//
+//    @RequestMapping(path = "/usuarios/{id}/numeronotificacoes", method = RequestMethod.GET)
+//    @ResponseStatus(HttpStatus.OK)
+//    public int numeroNotificacoesUsuario(@PathVariable int id) throws Exception {
+//        return  notificacaoDAO.countNotificacaoUsuario(id) + notificacaoDAO.countNotificacaoGrupos(id);
+//    }
+    
+    
     @RequestMapping(path = "/usuarios/{id}/notificacoes", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Notificacao> pesquisaNotificacoesUsuario(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
         PageRequest pageRequest = new PageRequest(pagina, 20);
 
-        return notificacaoDAO.findNotificacaoGrupos(id, pageRequest);
+        return notificacaoDAO.findNotificacaoUsuario(id, pageRequest);
     }
 
     @RequestMapping(path = "/usuarios/{id}/numeronotificacoes", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public int numeroNotificacoesUsuario(@PathVariable int id) throws Exception {
-        return  notificacaoDAO.countNotificacaoUsuario(id) + notificacaoDAO.countNotificacaoGrupos(id);
+        return  notificacaoDAO.countNotificacaoUsuario(id) ;
     }
 
     @RequestMapping(path = "/notificacoes/{id}", method = RequestMethod.DELETE)
