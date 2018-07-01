@@ -166,10 +166,6 @@ public class Grupos {
                     notificacoes.add(notificacao);
                     grupoDAO.save(grupo);
                     
-                    Usuario donoGrupo = grupo.getDonoGrupo();           // TESTE 
-                    List<Notificacao> notificacoesDono = donoGrupo.getNotificacoes();   // TESTE
-                    notificacoesDono.add(notificacao);  // TESTE
-                    usuarioDAO.save(donoGrupo); // TESTE
 
                 } else
                     throw new Exception("Grupos privados não aceitam inscrição.");
