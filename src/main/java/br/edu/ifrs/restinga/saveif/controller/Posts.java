@@ -169,11 +169,15 @@ public class Posts {
     public ResponseEntity<InputStreamResource> recuperarImagem(@PathVariable int id)
             throws IOException {
         Post post = postDAO.findById(id);
-        if (post.getAnexoPost().getDocumentoAnexo() != null) {
+        
+        if (post.getAnexoPost()!= null) {
             HttpHeaders respHeaders = new HttpHeaders();
-        respHeaders.setContentType(MediaType.valueOf(post.getAnexoPost().getTipoAnexo()));
-        InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(post.getAnexoPost().getDocumentoAnexo()));
-        return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
-        } else return null;
+            respHeaders.setContentType(MediaType.valueOf(post.getAnexoPost().getTipoAnexo()));
+            InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(post.getAnexoPost().getDocumentoAnexo()));
+            return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
+        }return null;
+        
+        
     }
+
 }
