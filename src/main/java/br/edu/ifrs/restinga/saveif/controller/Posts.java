@@ -18,11 +18,8 @@ import br.edu.ifrs.restinga.saveif.modelo.Notificacao;
 import br.edu.ifrs.restinga.saveif.modelo.Post;
 import br.edu.ifrs.restinga.saveif.modelo.Topico;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import javax.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -34,7 +31,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
 
 
 @RestController
@@ -157,5 +164,16 @@ public class Posts {
             
             return anexoSalvo;    
     }
-
+    
+    @RequestMapping(value = "/posts/{id}/anexo", method = RequestMethod.GET)
+    public ResponseEntity<InputStreamResource> recuperarImagem(@PathVariable int id)
+            throws IOException {
+        Post post = postDAO.findById(id);
+        if (post.getAnexoPost().getDocumentoAnexo() != null) {
+            HttpHeaders respHeaders = new HttpHeaders();
+        respHeaders.setContentType(MediaType.valueOf(post.getAnexoPost().getTipoAnexo()));
+        InputStreamResource img = new InputStreamResource(new ByteArrayInputStream(post.getAnexoPost().getDocumentoAnexo()));
+        return new ResponseEntity<>(img, respHeaders, HttpStatus.OK);
+        } else return null;
+    }
 }
