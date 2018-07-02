@@ -111,16 +111,16 @@ public class Usuarios {
             @RequestParam(required = false) String contem,
             @RequestParam(required = false, defaultValue = "0") int pagina, @RequestParam(required = false) int idGrupo) {
         PageRequest pageRequest = new PageRequest(pagina, 8);
-        
+
         Grupo integrantes = grupoDAO.findById(idGrupo);
-        
+
         if (igual != null) {
             return usuarioDAO.findByNomeAndGruposIntegradosNotIn(igual, integrantes, pageRequest);
         } else {
             return usuarioDAO.findByNomeContainingAndGruposIntegradosNotInOrderByNome(idGrupo, pageRequest);
         }
     }
-    
+
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Usuario> recuperar(@AuthenticationPrincipal UsuarioAut usuarioAut, @PathVariable int id) {
@@ -162,35 +162,42 @@ public class Usuarios {
     }
 
     @RequestMapping(path = "/usuarios/recuperar", method = RequestMethod.PUT)
-    public void alterarSenha(@RequestParam(required = false) String codigo, 
+    public void alterarSenha(@RequestParam(required = false) String codigo,
             @RequestBody Usuario usuario) throws Exception {
 
         UsuarioCodigo codigoUsuario = usuarioCodigoDAO.findByCodigo(codigo);
-        //System.out.println("dd: " + codigoUsuario);
+        String prefixo = usuario.getEmail().split("(?=@)")[0];
+        usuario.inserirEmailCompleto(prefixo);
+        System.out.println(usuario.getEmail());
+
         try {
-            
-            if (usuarioDAO.existsById(codigoUsuario.getUsuarioCodigo().getId())) {
 
-                Optional<Usuario> findById
-                        = usuarioDAO.findById(codigoUsuario.getUsuarioCodigo().getId());
+            if (usuarioDAO.findByEmail(usuario.getEmail()) != null) {
+                if (usuarioDAO.existsById(codigoUsuario.getUsuarioCodigo().getId())) {
 
-                Usuario alt = findById.get();
+                    Optional<Usuario> findById
+                            = usuarioDAO.findById(codigoUsuario.getUsuarioCodigo().getId());
 
-                alt.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
+                    Usuario alt = findById.get();
 
-                usuarioDAO.save(alt);
+                    alt.setSenha(PASSWORD_ENCODER.encode(usuario.getNovaSenha()));
 
+                    usuarioDAO.save(alt);
+
+                } else {
+
+                    throw new Exception("Usuário não encontrado");
+
+                }
             } else {
-                
-                throw new Exception("Usuário não encontrado");
-                
+                throw new Exception("Não existe nenhum usuário com esse E-mail");
             }
 
         } catch (NullPointerException npe) {
 
-            throw new Exception("Não existe nenhum usuário para o código informado!");
+            throw new Exception("Código Inválido!");
 
-        }
+        } 
     }
 
     @RequestMapping(path = "/usuarios/{id}", method = RequestMethod.DELETE)
@@ -274,7 +281,7 @@ public class Usuarios {
 
         Optional<Usuario> usuario = usuarioDAO.findById(usuarioCodigo.getId());
         usuarioCodigo.setUsuarioCodigo(usuario.get());
-        
+
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setSubject("Código de para alterar senha!");
