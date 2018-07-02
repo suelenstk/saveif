@@ -403,4 +403,9 @@ public class Grupos {
             throw new ForbiddenException("Além dos administradores do sistema somente coordenadores poderão remover participantes do grupo.");
 
     }
+    
+    @RequestMapping(path = "/grupos/{id}/coordenadores", method = RequestMethod.GET)
+    public List<Usuario> listarCoordenadores(@PathVariable int id) {
+        return grupoDAO.findById(id).getCoordenadoresGrupo();
+    }
 }
