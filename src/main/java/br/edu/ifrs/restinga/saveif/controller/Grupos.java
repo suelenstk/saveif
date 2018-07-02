@@ -353,6 +353,17 @@ public class Grupos {
                     grupo.setCoordenadoresGrupo(coordenadores);
 
                     grupoDAO.save(grupo);
+                    
+                    Notificacao notificacao = new Notificacao("Você agora é coordenador(a) do grupo ", "", "",
+                            Integer.toString(grupo.getId()), grupo.getNome(), "mensagem");
+
+                    notificacao = notificacaoDAO.save(notificacao);
+
+                    List<Notificacao> notificacoesUsuario = usuario.getNotificacoes();
+                    notificacoesUsuario.add(notificacao);
+                    usuario.setNotificacoes(notificacoesUsuario);
+
+                    usuarioDAO.save(usuario);
 
 
                 } else
