@@ -1,7 +1,9 @@
 package br.edu.ifrs.restinga.saveif.dao;
 
+import br.edu.ifrs.restinga.saveif.controller.Usuarios;
 import br.edu.ifrs.restinga.saveif.modelo.Grupo;
 import br.edu.ifrs.restinga.saveif.modelo.Usuario;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -19,10 +21,12 @@ public interface UsuarioDAO extends PagingAndSortingRepository<Usuario, Integer>
     Page<Usuario> findByNomeContainingOrderByNome(String nome, Pageable pageable);
     
     //@Query("SELECT usuario FROM Grupo grupo JOIN grupo.integrantesGrupo usuario WHERE grupo.id = :idGrupo AND usuario.id")
-    Page<Usuario> findByNomeAndGruposIntegradosNotIn(String nome, Grupo grupo, Pageable pageable);
-    //Grupo grupo JOIN grupo.integrantesGrupo usuario WHERE grupo.id = :idGrupo
-    @Query("SELECT usuarios FROM Usuario usuarios JOIN usuarios.gruposCoordenados grupoCoordenados JOIN usuarios.gruposIntegrados grupoIntegrados WHERE grupoCoordenados.id != :idGrupo AND grupoIntegrados.id != :idGrupo")
-    Page<Usuario> findByNomeContainingAndGruposIntegradosNotInOrderByNome(@Param("idGrupo") int id, Pageable pageable);
+    Page<Usuario> findByNomeAndIdIn(String nome, List<Integer> ids, Pageable pageable);
+    //JOIN usuarios.gruposCoordenados grupoCoordenados JOIN usuarios.gruposIntegrados grupoIntegrados JOIN usuarios.gruposConvidado grupoConvidados WHERE grupoCoordenados.id != :idGrupo AND grupoIntegrados.id != :idGrupo AND grupoConvidados.id != :idGrupo"
+    @Query("SELECT usuarios FROM Usuario usuarios WHERE usuarios IN usuario")
+    Page<Usuario> findByNomeContainingAndGruposIntegradosNotInOrderByNome(@Param("usuario") List<Usuario> usuario, Pageable pageable);
+    
+    Page<Usuario> findByNomeContainingAndIdInOrderByNome(String nome, List<Integer> ids, Pageable pageable);
     
     Page<Usuario> findByGruposIntegrados(Grupo integrantes, Pageable pageable);
 

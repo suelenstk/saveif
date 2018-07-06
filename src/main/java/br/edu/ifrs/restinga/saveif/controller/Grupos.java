@@ -99,7 +99,6 @@ public class Grupos {
         if (grupo.getCoordenadoresGrupo().contains(logado)
                 || usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
 
-
             for (int i = 0; i >= idsUsuarios.size(); i++) {
 
                 Optional<Usuario> findById = usuarioDAO.findById(idsUsuarios.get(i));

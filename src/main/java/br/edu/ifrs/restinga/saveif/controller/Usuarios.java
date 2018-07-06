@@ -113,11 +113,39 @@ public class Usuarios {
         PageRequest pageRequest = new PageRequest(pagina, 8);
 
         Grupo integrantes = grupoDAO.findById(idGrupo);
+        List <Usuario> usuarios = new ArrayList();
+        usuarios = (List<Usuario>) usuarioDAO.findAll();
+        
+        List<Integer> ids = new ArrayList ();
+        
+        for (int i = 0; i < usuarios.size(); i++){
+            ids.add (usuarios.get(i).getId());
+        }
+        
+        for (int i = 0; i < usuarios.size(); i++){
+            if (integrantes.getDonoGrupo().getId()==usuarios.get(i).getId()){
+                ids.remove(i);
+            }
+            
+            for (int k = 0; k < integrantes.getCoordenadoresGrupo().size(); k++){
+                if (usuarios.get(i).getId()==integrantes.getCoordenadoresGrupo().get(k).getId()){
+                    ids.remove(i);
+                }
+            }
+                 /*
+            for (int k = 0; k < integrantes.getConvitesGrupo().size(); k++){
+                if (usuarios.get(i).getId()==integrantes.getConvitesGrupo().get(k).getId()){
+                    ids.remove(i);
+                }
+            }*/
+        }
 
         if (igual != null) {
-            return usuarioDAO.findByNomeAndGruposIntegradosNotIn(igual, integrantes, pageRequest);
+            return usuarioDAO.findByNomeAndIdIn(igual, ids, pageRequest);
         } else {
-            return usuarioDAO.findByNomeContainingAndGruposIntegradosNotInOrderByNome(idGrupo, pageRequest);
+            return usuarioDAO.findByNomeContainingAndIdInOrderByNome(contem, ids, pageRequest);
+           
+           
         }
     }
 
