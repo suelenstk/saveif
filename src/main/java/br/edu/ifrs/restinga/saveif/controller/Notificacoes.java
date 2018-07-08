@@ -34,12 +34,7 @@ public class Notificacoes {
     public Iterable<Notificacao> pesquisaNotificacoesUsuario(@RequestParam(required = false, defaultValue = "0") int pagina, @PathVariable int id) throws Exception {
         PageRequest pageRequest = new PageRequest(pagina, 20);
 
-        List lstNotificacoes = notificacaoDAO.findNotificacoes(id);
-        int start = (int) pageRequest.getOffset();
-        int end = (int)((start + pageRequest.getPageSize()) > lstNotificacoes.size() ? lstNotificacoes.size() : (start + pageRequest.getPageSize()));
-        
-        return new PageImpl<>(lstNotificacoes.subList(start, end), pageRequest, lstNotificacoes.size());
-
+        return notificacaoDAO.findNotificacoes(id, pageRequest);
         
     }
 

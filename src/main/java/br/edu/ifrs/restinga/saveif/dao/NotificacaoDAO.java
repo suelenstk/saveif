@@ -17,10 +17,10 @@ public interface NotificacaoDAO extends PagingAndSortingRepository<Notificacao, 
     public int countNotificacaoGrupos(@Param("idusuario")int id);
     
         
-    @Query( "SELECT DISTINCT(notificacao) FROM Notificacao notificacao LEFT JOIN Usuario usuario ON  notificacao MEMBER OF usuario.notificacoes "
+    @Query( "SELECT DISTINCT notificacao FROM Notificacao notificacao LEFT JOIN Usuario usuario ON  notificacao MEMBER OF usuario.notificacoes "
             + " LEFT JOIN Grupo grupo ON notificacao MEMBER OF grupo.notificacoes LEFT JOIN grupo.coordenadoresGrupo coordenador "
             + " WHERE usuario.id = :idusuario OR coordenador.id = :idusuario")
-    public List<Notificacao> findNotificacoes(@Param("idusuario")int id);
+    public Page<Notificacao> findNotificacoes(@Param("idusuario")int id,  Pageable pageable);
     
     
     
