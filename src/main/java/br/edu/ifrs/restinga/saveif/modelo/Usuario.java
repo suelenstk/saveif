@@ -32,6 +32,7 @@ public class Usuario implements Serializable {
     @Column(nullable = false, length = 60)
     private String nome;
 
+    @JsonIgnore
     @Column(unique = true, length = 14)
     private String cpf;
 
